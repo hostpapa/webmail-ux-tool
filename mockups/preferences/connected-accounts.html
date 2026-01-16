@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connected accounts | Webmail</title>
+    <!-- Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Fonts: Satoshi (Simulated via CDN for Preview) -->
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
+    <!-- Icon Library: Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Hostopia GEM_09 Design Tokens - WCAG 2.1 AA Remediated */
+        :root {
+            /* -- Core Colors -- */
+            --color-core-white: #FFFFFF;
+            --color-core-charcoal: #25282A;
+            --color-core-neutral-50: #F9FAFB;
+            --color-core-neutral-100: #F3F4F6;
+            --color-core-neutral-200: #E5E7EB;
+            --color-core-neutral-300: #D1D5DB;
+            --color-core-neutral-400: #9CA3AF;
+            --color-core-neutral-500: #6B7280;
+            --color-core-neutral-600: #4B5563;
+            --color-core-neutral-900: #111827;
+
+            /* Branding & Accents */
+            --color-core-accent-teal: #1A6B6E;
+            --color-core-accent-teal-light: #E0F5F6;
+            --color-core-accent-teal-hover: #145558;
+            --color-core-accent-blue: #2CADB2;
+            --color-brand-secondary: var(--color-core-accent-blue);
+            --color-brand-secondary-hover: #249296;
+
+            /* Status States */
+            --color-status-success: #036b4a;
+            --color-status-error: #DC2626;
+
+            /* -- Semantic Tokens -- */
+            --color-brand-primary: var(--color-core-charcoal);
+            --color-bg-canvas: var(--color-core-neutral-50);
+            --color-bg-surface: var(--color-core-white);
+            --color-text-primary: var(--color-core-neutral-900);
+            --color-text-secondary: var(--color-core-neutral-500);
+            --color-border-subtle: var(--color-core-neutral-200);
+
+            /* Top Nav Specifics (from nav-menu.html) */
+            --bg-header: var(--color-brand-primary);
+            --text-header-primary: var(--color-core-white);
+            --text-header-secondary: rgba(255, 255, 255, 0.7);
+            --bg-search: rgba(255, 255, 255, 0.1);
+            --border-search: rgba(255, 255, 255, 0.2);
+            --bg-panel: var(--color-core-white);
+            --border-panel: var(--color-core-neutral-200);
+
+            /* Layout Tokens */
+            --space-1: 8px;
+            --space-2: 16px;
+            --space-3: 24px;
+            --space-4: 32px;
+            --size-height-top-nav: 64px;
+            --size-width-sidebar: 280px;
+            --radius-md: 6px;
+            --radius-lg: 8px;
+
+            --font-family-body: 'Inter', sans-serif;
+            --font-family-heading: 'Satoshi', sans-serif;
+
+            /* Z-Indices */
+            --z-sticky: 1000;
+            --z-dropdown: 1010;
+            --z-modal: 1020;
+        }
+
+        /* Foundations */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--color-bg-canvas);
+            font-family: var(--font-family-body);
+            color: var(--color-text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: var(--font-family-heading);
+            color: var(--color-core-charcoal);
+        }
+
+        /* =========================================
+           Component: Top Navigation (Alternate)
+           Integrated from nav-menu.html
+           ========================================= */
+        .top-nav-header-alt {
+            height: var(--size-height-top-nav);
+            background-color: var(--bg-header);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--space-3);
+            position: relative;
+            z-index: 1200;
+            flex-shrink: 0;
+        }
+
+        .top-nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 250px;
+            flex-shrink: 0;
+        }
+
+        .top-nav-brand span {
+            font-family: var(--font-family-heading);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-header-primary);
+            letter-spacing: -0.01em;
+        }
+
+        .top-nav-search-container {
+            flex: 1;
+            max-width: 640px;
+            position: relative;
+            margin: 0 var(--space-2);
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .search-icon-left {
+            position: absolute;
+            left: 12px;
+            color: var(--text-header-secondary);
+            font-size: 18px;
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 40px;
+            background-color: var(--bg-search);
+            border: 1px solid var(--border-search);
+            border-radius: 4px;
+            padding: 0 40px;
+            color: var(--text-header-primary);
+            font-family: var(--font-family-body);
+            font-size: 14px;
+            transition: all 0.3s cubic-bezier(0, 0, 0.58, 1.0);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-header-secondary);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-brand-secondary);
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .advanced-search-trigger {
+            position: absolute;
+            right: 8px;
+            background: none;
+            border: none;
+            color: var(--text-header-secondary);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .advanced-search-trigger:hover,
+        .advanced-search-trigger.active {
+            color: var(--text-header-primary);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .top-nav-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 16px;
+            width: 250px;
+            flex-shrink: 0;
+        }
+
+        .nav-icon-link {
+            color: var(--text-header-secondary);
+            font-size: 24px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+            position: relative;
+        }
+
+        .nav-icon-link:hover {
+            color: var(--text-header-primary);
+        }
+
+        .nav-icon-link.active {
+            color: var(--color-brand-secondary);
+        }
+
+        .nav-separator {
+            width: 1px;
+            height: 24px;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-container {
+            position: relative;
+        }
+
+        .profile-trigger {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: var(--text-header-secondary);
+            background: none;
+            border: none;
+            padding: 0;
+            transition: color 0.2s;
+        }
+
+        .profile-trigger:hover,
+        .profile-trigger.active {
+            color: var(--text-header-primary);
+        }
+
+        .advanced-search-panel {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            border-radius: 0 0 4px 4px;
+            padding: 24px;
+            display: none;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            z-index: var(--z-dropdown);
+            opacity: 0;
+            transform: translateY(-8px);
+            transition: opacity 0.2s, transform 0.2s;
+            border-top: 1px solid var(--border-panel);
+        }
+
+        .advanced-search-panel.open {
+            display: grid;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .profile-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 220px;
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            border-radius: 4px;
+            margin-top: 8px;
+            padding: 8px 0;
+            display: none;
+            flex-direction: column;
+            z-index: var(--z-dropdown);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-menu.open {
+            display: flex;
+        }
+
+        .menu-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-panel);
+            margin-bottom: 8px;
+        }
+
+        .user-name {
+            display: block;
+            font-weight: 600;
+            color: var(--color-core-charcoal);
+            font-size: 14px;
+        }
+
+        .user-email {
+            display: block;
+            font-size: 13px;
+            color: var(--color-core-neutral-500);
+        }
+
+        .menu-item {
+            padding: 8px 16px;
+            text-decoration: none;
+            color: var(--color-core-charcoal);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: background-color 0.2s;
+        }
+
+        .menu-item:hover {
+            background-color: var(--color-core-neutral-100);
+        }
+
+        /* Sidebar Navigation */
+        .app-layout {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: var(--size-width-sidebar);
+            background: var(--color-bg-surface);
+            border-right: 1px solid var(--color-border-subtle);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .sidebar-section {
+            border-bottom: 1px solid var(--color-core-neutral-100);
+            padding-bottom: var(--space-2);
+        }
+
+        .sidebar-header {
+            padding: var(--space-3) var(--space-3) var(--space-1);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--color-text-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            letter-spacing: 0.05em;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px var(--space-3);
+            margin: 0 var(--space-2) 2px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-core-neutral-600);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            transition: all 0.2s;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .sidebar-item:hover {
+            background-color: var(--color-core-neutral-50);
+            color: var(--color-core-neutral-900);
+        }
+
+        .sidebar-item.active {
+            background-color: var(--color-core-accent-teal-light);
+            color: var(--color-core-accent-teal);
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--space-4);
+        }
+
+        .settings-container {
+            width: 100%;
+            max-width: 860px;
+            background: var(--color-bg-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border-subtle);
+            margin: 0 auto var(--space-4) auto;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .settings-header {
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--color-border-subtle);
+        }
+
+        .settings-header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-core-neutral-900);
+            margin-bottom: 4px;
+        }
+
+        .settings-header .subtitle {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Grid */
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            padding: var(--space-4);
+        }
+
+        .platform-tile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 12px;
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--color-bg-surface);
+            text-align: center;
+            outline: none;
+        }
+
+        .platform-tile:hover {
+            border-color: var(--color-core-accent-teal);
+            background-color: var(--color-core-neutral-50);
+            transform: translateY(-1px);
+        }
+
+        .platform-tile i {
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: var(--color-text-secondary);
+        }
+
+        .platform-tile.google i {
+            color: #DB4437;
+        }
+
+        .platform-tile.outlook i {
+            color: #0078D4;
+        }
+
+        .platform-tile.yahoo i {
+            color: #6001D2;
+        }
+
+        .platform-tile.icloud i {
+            color: #000000;
+        }
+
+        .platform-tile span {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        /* List View */
+        .account-list-item {
+            display: flex;
+            align-items: center;
+            padding: 16px var(--space-4);
+            border-bottom: 1px solid var(--color-core-neutral-100);
+        }
+
+        .account-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .account-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--color-core-neutral-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 20px;
+            color: var(--color-text-secondary);
+        }
+
+        .account-info {
+            flex: 1;
+        }
+
+        .account-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--color-text-primary);
+        }
+
+        .account-email {
+            font-size: 13px;
+            color: var(--color-text-secondary);
+        }
+
+        .account-status {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: #D1FAE5;
+            color: #065F46;
+            margin-right: 16px;
+        }
+
+        /* Quick Connect */
+        .quick-connect {
+            padding: var(--space-3) var(--space-4);
+            background: var(--color-core-neutral-50);
+            border-bottom: 1px solid var(--color-border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .quick-connect-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        .quick-icons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .quick-icon-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--color-border-subtle);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-bg-surface);
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 18px;
+            outline: none;
+            color: var(--color-text-secondary);
+        }
+
+        .quick-icon-btn:hover {
+            border-color: var(--color-core-accent-teal);
+            color: var(--color-core-accent-teal);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: var(--color-core-accent-teal);
+            color: var(--color-core-white);
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        /* Footer */
+        .settings-footer {
+            padding: var(--space-3) var(--space-4);
+            background-color: var(--color-core-neutral-50);
+            border-top: 1px solid var(--color-border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: auto;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: var(--color-bg-surface);
+            width: 480px;
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            bottom: 32px;
+            left: 32px;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .toast-content-wrapper {
+            background-color: var(--color-core-white);
+            border: 2px solid var(--color-brand-secondary);
+            border-radius: 6px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: all 0.3s cubic-bezier(0, 0, 0.2, 1);
+            pointer-events: auto;
+        }
+
+        .toast-content-wrapper.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast-content-wrapper i {
+            color: var(--color-brand-secondary);
+            font-size: 24px;
+        }
+
+        .toast-content-wrapper span {
+            color: var(--color-text-primary);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Integrated Nav Menu from nav-menu.html -->
+    <header class="top-nav-header-alt">
+        <div class="top-nav-brand">
+            <a href="#" style="text-decoration: none;">
+                <span>Webmail</span>
+            </a>
+        </div>
+
+        <div class="top-nav-search-container">
+            <div class="search-input-wrapper">
+                <i class="ph ph-magnifying-glass search-icon-left"></i>
+                <input type="text" class="search-input" placeholder="Search mail, contacts, events...">
+                <button class="advanced-search-trigger" id="advSearchToggle" aria-label="Toggle Advanced Search">
+                    <i class="ph ph-sliders-horizontal"></i>
+                </button>
+            </div>
+
+            <!-- Advanced Search Panel -->
+            <div class="advanced-search-panel" id="advSearchPanel">
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-bold uppercase text-gray-500">From</label>
+                    <input type="text" class="border p-2 rounded text-sm" placeholder="Sender">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-bold uppercase text-gray-500">To</label>
+                    <input type="text" class="border p-2 rounded text-sm" placeholder="Recipient">
+                </div>
+                <div class="flex flex-col gap-1 col-span-2">
+                    <label class="text-xs font-bold uppercase text-gray-500">Subject</label>
+                    <input type="text" class="border p-2 rounded text-sm" placeholder="Contains words...">
+                </div>
+                <div class="col-span-2 flex justify-end gap-2 pt-4 border-t mt-2">
+                    <button class="px-4 py-2 border rounded text-sm hover:bg-gray-50" id="cancelSearch">Cancel</button>
+                    <button
+                        class="px-4 py-2 bg-[var(--color-core-accent-blue)] text-white rounded text-sm font-medium">Search</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="top-nav-actions">
+            <a href="#" class="nav-icon-link" aria-label="Mail"><i class="ph-fill ph-envelope-simple"></i></a>
+            <a href="#" class="nav-icon-link" aria-label="Calendar"><i class="ph ph-calendar"></i></a>
+            <a href="#" class="nav-icon-link" aria-label="Contacts"><i class="ph ph-users"></i></a>
+            <div class="nav-separator"></div>
+            <div class="profile-container">
+                <button class="profile-trigger" id="profileTrigger">
+                    <i class="ph ph-user-circle" style="font-size: 28px;"></i>
+                    <i class="ph ph-caret-down" style="font-size: 14px;"></i>
+                </button>
+                <div class="profile-menu" id="profileMenu">
+                    <div class="menu-header">
+                        <span class="user-name">John Doe</span>
+                        <span class="user-email">john.doe@example.com</span>
+                    </div>
+                    <a href="#" class="menu-item"><i class="ph ph-gear"></i> Settings</a>
+                    <a href="#" class="menu-item"><i class="ph ph-life-buoy"></i> Support</a>
+                    <a href="#" class="menu-item text-red-600 border-t mt-2 pt-2"><i class="ph-fill ph-sign-out"></i>
+                        Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="app-layout">
+        <aside class="sidebar" role="navigation" aria-label="Preferences Sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-header">Account <i class="ph ph-caret-down"></i></div>
+                <a href="#" class="sidebar-item"><i class="ph ph-user"></i> Profile</a>
+                <a href="#" class="sidebar-item"><i class="ph ph-globe"></i> Date and Language</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-header">Mail <i class="ph ph-caret-down"></i></div>
+                <a href="#" class="sidebar-item active"><i class="ph-fill ph-link"></i> Connected accounts</a>
+                <a href="#" class="sidebar-item"><i class="ph ph-shield-check"></i> Spam Filters</a>
+            </div>
+        </aside>
+
+        <main class="main-content" role="main">
+            <div class="settings-container h-full">
+                <div class="settings-header">
+                    <h1>Connected accounts</h1>
+                    <p class="subtitle">Centralize your email by connecting external accounts. You can read, reply, and
+                        manage messages from other providers directly within your Hostopia inbox.</p>
+                </div>
+
+                <div id="emptyState" class="flex-1">
+                    <div class="px-8 pt-8">
+                        <h2 class="section-label">Choose a platform to get started</h2>
+                    </div>
+                    <div class="platform-grid">
+                        <button class="platform-tile google" onclick="addAccount('Gmail', 'ph-google-logo')">
+                            <i class="ph-fill ph-google-logo"></i><span>Google / Gmail</span>
+                        </button>
+                        <button class="platform-tile outlook"
+                            onclick="addAccount('Outlook', 'ph-microsoft-outlook-logo')">
+                            <i class="ph-fill ph-microsoft-outlook-logo"></i><span>Outlook</span>
+                        </button>
+                        <button class="platform-tile yahoo" onclick="addAccount('Yahoo', 'ph-at')">
+                            <i class="ph-fill ph-at"></i><span>Yahoo Mail</span>
+                        </button>
+                        <button class="platform-tile icloud" onclick="addAccount('iCloud', 'ph-cloud')">
+                            <i class="ph-fill ph-cloud"></i><span>Apple iCloud</span>
+                        </button>
+                        <button class="platform-tile" onclick="addAccount('Other', 'ph-globe')">
+                            <i class="ph-fill ph-globe"></i><span>Other (IMAP)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="listView" class="hidden flex-1 flex flex-col">
+                    <div class="quick-connect">
+                        <span class="quick-connect-label">Connect Another:</span>
+                        <div class="quick-icons">
+                            <button class="quick-icon-btn google" onclick="addAccount('Gmail', 'ph-google-logo')"><i
+                                    class="ph-fill ph-google-logo"></i></button>
+                            <button class="quick-icon-btn outlook"
+                                onclick="addAccount('Outlook', 'ph-microsoft-outlook-logo')"><i
+                                    class="ph-fill ph-microsoft-outlook-logo"></i></button>
+                            <button class="quick-icon-btn yahoo" onclick="addAccount('Yahoo', 'ph-at')"><i
+                                    class="ph-fill ph-at"></i></button>
+                            <button class="quick-icon-btn" onclick="openFullPlatformList()"><i
+                                    class="ph-bold ph-plus"></i></button>
+                        </div>
+                    </div>
+                    <div id="accountContainer" role="list"></div>
+                </div>
+
+                <div class="settings-footer">
+                    <button id="saveBtn" class="btn-primary" onclick="handleSave()">Save Updates</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="modalOverlay" class="modal-overlay" onclick="closeModal()">
+        <div class="modal" role="dialog" onclick="event.stopPropagation()">
+            <h2 class="text-xl font-bold mb-4">Connect Account</h2>
+            <p class="text-gray-500 text-sm mb-6">Enter your credentials to link your <span id="platformName"
+                    class="font-bold"></span> account.</p>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Email Address</label>
+                    <input type="text" id="emailInput" class="w-full border p-2 rounded text-sm"
+                        placeholder="john@example.com">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Password</label>
+                    <input type="password" id="passInput" class="w-full border p-2 rounded text-sm"
+                        placeholder="••••••••">
+                </div>
+            </div>
+            <div class="mt-8 flex justify-end gap-3">
+                <button class="px-6 py-2 text-gray-500 font-medium hover:bg-gray-50 rounded-md"
+                    onclick="closeModal()">Cancel</button>
+                <button class="btn-primary" onclick="confirmAdd()">Connect Account</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <script>
+        // Nav Logic
+        const searchToggleBtn = document.getElementById('advSearchToggle');
+        const searchPanel = document.getElementById('advSearchPanel');
+        const searchCancelBtn = document.getElementById('cancelSearch');
+        const profileTrigger = document.getElementById('profileTrigger');
+        const profileMenu = document.getElementById('profileMenu');
+
+        searchToggleBtn.onclick = (e) => {
+            e.stopPropagation();
+            searchPanel.classList.toggle('open');
+            searchToggleBtn.classList.toggle('active');
+            profileMenu.classList.remove('open');
+        };
+
+        searchCancelBtn.onclick = () => {
+            searchPanel.classList.remove('open');
+            searchToggleBtn.classList.remove('active');
+        };
+
+        profileTrigger.onclick = (e) => {
+            e.stopPropagation();
+            profileMenu.classList.toggle('open');
+            searchPanel.classList.remove('open');
+        };
+
+        document.onclick = (e) => {
+            if (!searchPanel.contains(e.target) && !searchToggleBtn.contains(e.target)) {
+                searchPanel.classList.remove('open');
+                searchToggleBtn.classList.remove('active');
+            }
+            if (!profileMenu.contains(e.target) && !profileTrigger.contains(e.target)) {
+                profileMenu.classList.remove('open');
+            }
+        };
+
+        // Page Logic
+        let currentPlatform = '';
+        let currentIcon = '';
+
+        function addAccount(platform, icon) {
+            currentPlatform = platform; currentIcon = icon;
+            document.getElementById('platformName').innerText = platform;
+            document.getElementById('modalOverlay').style.display = 'flex';
+            document.getElementById('emailInput').focus();
+        }
+
+        function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
+
+        function confirmAdd() {
+            const container = document.getElementById('accountContainer');
+            const newItem = document.createElement('div');
+            newItem.className = 'account-list-item';
+            newItem.innerHTML = `
+                <div class="account-avatar"><i class="ph-fill ${currentIcon}"></i></div>
+                <div class="account-info">
+                    <div class="account-name">${currentPlatform} Account</div>
+                    <div class="account-email">user@${currentPlatform.toLowerCase()}.com</div>
+                </div>
+                <div class="account-status">Connected</div>
+                <button class="text-gray-400 hover:text-red-600 p-2" onclick="removeAccount(this)"><i class="ph-bold ph-trash"></i></button>
+            `;
+            container.appendChild(newItem);
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('listView').classList.remove('hidden');
+            closeModal();
+            showToast('Account connected successfully');
+        }
+
+        function removeAccount(btn) {
+            btn.parentElement.remove();
+            if (document.getElementById('accountContainer').children.length === 0) {
+                document.getElementById('emptyState').classList.remove('hidden');
+                document.getElementById('listView').classList.add('hidden');
+            }
+        }
+
+        function openFullPlatformList() {
+            document.getElementById('emptyState').classList.remove('hidden');
+            document.getElementById('listView').classList.add('hidden');
+        }
+
+        function handleSave() {
+            const btn = document.getElementById('saveBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="ph-bold ph-circle-notch animate-spin"></i> Saving...';
+            setTimeout(() => {
+                btn.innerHTML = 'Save Updates';
+                btn.disabled = false;
+                showToast('Preferences saved successfully');
+            }, 1000);
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast-content-wrapper';
+            toast.innerHTML = `<i class="ph-fill ph-check-circle"></i><span>${message}</span>`;
+            container.appendChild(toast);
+            requestAnimationFrame(() => { toast.classList.add('show'); });
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => { toast.remove(); }, 300);
+            }, 3000);
+        }
+
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,99 @@
+.header {
+    background-color: var(--color-brand-primary);
+    color: var(--color-text-on-primary);
+    height: var(--size-height-top-nav);
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
+    padding: 0 var(--space-3);
+    gap: var(--space-3);
+}
+
+.logo {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.logoText {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-on-primary);
+}
+
+.links {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    margin-left: var(--space-3);
+    flex-grow: 1;
+    list-style: none;
+    /* In case ul is used */
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: 0 var(--space-2);
+    height: var(--size-height-top-nav);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: background-color 150ms ease-out, color 150ms ease-out;
+    border: 2px solid transparent;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.link:hover {
+    background-color: var(--color-background-interactive-hover);
+    color: white;
+}
+
+.linkActive {
+    composes: link;
+    position: relative;
+    color: white;
+}
+
+.linkActive::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: var(--space-2);
+    right: var(--space-2);
+    height: 2px;
+    background-color: white;
+}
+
+.link:focus-visible {
+    outline: none;
+    border-color: var(--color-brand-secondary);
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+@media (max-width: 640px) {
+    .textMobileHide {
+        display: none;
+    }
+}

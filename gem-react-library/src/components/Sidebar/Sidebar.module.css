@@ -1,0 +1,126 @@
+.sidebar {
+    background-color: var(--color-background-container);
+    border-right: 1px solid var(--color-border-neutral);
+    width: 260px;
+    /* Matches .sidebar-nav-anchor width */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding-bottom: var(--space-4);
+    /* Matches .sidebar-nav-anchor */
+}
+
+/* --- Anchor / Settings Variant Styles --- */
+
+.sectionHeader {
+    padding: 24px 16px 8px 16px;
+    /* Matches .nav-group-header */
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    color: var(--color-text-primary);
+}
+
+.sectionHeaderIcon {
+    font-size: 18px;
+    color: var(--color-brand-secondary);
+    /* Teal Icon */
+}
+
+.sectionHeaderText {
+    font-family: var(--font-family-heading);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.navList {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0px;
+    /* Reduced margin in anchor pattern */
+    padding: 0 8px;
+    /* Matches .nav-items */
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    /* Matches .nav-item */
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    margin-bottom: 2px;
+    transition: all 150ms ease-out;
+    cursor: pointer;
+    line-height: 1.4;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+}
+
+.item:hover {
+    background-color: var(--color-core-neutral-100);
+    color: var(--color-text-primary);
+}
+
+.itemSelected {
+    composes: item;
+    background-color: var(--color-brand-secondary-light);
+    /* Matches .nav-item.active */
+    color: var(--color-text-primary);
+    font-weight: 600;
+    /* Matches .nav-item.active */
+}
+
+
+/* --- Legacy / Standard Styles (Preserved but adapted) --- */
+
+.header {
+    margin-bottom: var(--space-3);
+    padding: 0 var(--space-3);
+}
+
+.header h1 {
+    color: var(--color-text-primary);
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--space-3);
+    margin-top: 0;
+}
+
+.footer {
+    border-top: 1px solid var(--color-border-neutral);
+    padding: var(--space-2) var(--space-3);
+    margin-top: auto;
+}
+
+.usageLabel {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-1);
+}
+
+.usageBar {
+    width: 100%;
+    height: 6px;
+    background-color: var(--color-core-neutral-200);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.usageBarFill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    background-color: var(--color-brand-secondary);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.usageBarFillDanger {
+    background-color: var(--color-status-danger);
+}

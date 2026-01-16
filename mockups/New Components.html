@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostopia Component Library Visualization</title>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Google Fonts for Inter and generic fallback for Satoshi (Satoshi usually local, mapping to sans-serif) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           GEM_09: CORE DESIGN TOKENS
+           ========================================= */
+        :root {
+            /* -- Color Tokens -- */
+            /* Core Palette */
+            --color-core-white: #FFFFFF;
+            --color-core-charcoal: #25282A;
+            --color-core-neutral-50: #F9FAFB;
+            --color-core-neutral-100: #F3F4F6;
+            --color-core-neutral-200: #E5E7EB;
+            --color-core-neutral-300: #D1D5DB;
+            --color-core-neutral-500: #6B7280;
+            --color-core-neutral-800: #1F2937;
+            --color-core-neutral-900: #111827;
+            --color-core-black: #000000;
+
+            /* Accents */
+            --color-core-accent-blue: #2CADB2;
+            --color-core-accent-blue-light: #E0F5F6;
+            --color-core-accent-amber: #F59E0B;
+
+            /* Status */
+            --color-core-status-danger: #EF4444;
+            --color-core-status-warning: #FF8400;
+            --color-core-status-success: #66BC29;
+
+            /* -- Semantic Roles -- */
+            /* Brand Identity */
+            --color-brand-primary: var(--color-core-charcoal);
+            --color-brand-secondary: var(--color-core-accent-blue);
+            --color-brand-secondary-light: var(--color-core-accent-blue-light);
+            --color-brand-secondary-dark: #238b8f; /* Generated for darker needs */
+
+            /* Text */
+            --color-text-primary: var(--color-core-charcoal);
+            --color-text-secondary: var(--color-core-neutral-500);
+            --color-text-on-primary: var(--color-core-white);
+            --color-text-interactive: var(--color-core-accent-blue);
+
+            /* Backgrounds */
+            --color-background-page: var(--color-core-neutral-50);
+            --color-background-container: var(--color-core-white);
+            --color-background-interactive-primary: var(--color-brand-primary);
+            --color-background-interactive-hover: rgba(255, 255, 255, 0.1);
+            --color-background-selected: var(--color-core-accent-blue-light);
+
+            /* Borders */
+            --color-border-neutral: var(--color-core-neutral-200);
+            --color-border-interactive: var(--color-core-neutral-300);
+
+            /* Status */
+            --color-status-danger: var(--color-core-status-danger);
+            --color-status-warning: var(--color-core-status-warning);
+            --color-status-success: var(--color-core-status-success);
+
+            /* -- Typography Tokens -- */
+            --font-family-heading: 'Satoshi', 'Inter', sans-serif; /* Fallback to Inter if Satoshi unavailable */
+            --font-family-body: 'Inter', sans-serif;
+
+            --font-weight-regular: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+
+            --font-size-xs: 12px;
+            --font-size-sm: 13px;
+            --font-size-base: 14px;
+            --font-size-lg: 18px;
+            --font-size-xl: 20px;
+
+            /* -- Spacing Tokens (8pt Grid) -- */
+            --space-1: 8px;
+            --space-2: 16px;
+            --space-3: 24px;
+            --space-4: 32px;
+            --space-5: 40px;
+            --space-6: 48px;
+
+            /* -- Sizing & Radius Tokens -- */
+            --radius-sm: 4px;
+            --radius-md: 6px;
+            --radius-lg: 8px;
+            --radius-full: 9999px;
+
+            --size-height-top-nav: 48px;
+            --size-height-list-item: 52px;
+            
+            /* Login Pattern specific */
+            --login-bg-page: #F9FAFB;
+            --login-bg-card: #FFFFFF;
+            --login-text-main: #25282A;
+            --login-text-sub: #6B7280;
+            --login-brand-color: #25282A;
+            --login-accent-color: #2CADB2;
+            --login-radius: 6px;
+        }
+
+        /* =========================================
+           GLOBAL RESETS & PRESENTATION
+           ========================================= */
+        * { box-sizing: border-box; }
+        body {
+            font-family: var(--font-family-body);
+            background-color: var(--color-background-page);
+            color: var(--color-text-primary);
+            margin: 0;
+            padding: 40px;
+        }
+        h1.main-title {
+            font-family: var(--font-family-heading);
+            font-size: 32px;
+            margin-bottom: 16px;
+            color: var(--color-brand-primary);
+        }
+        p.intro {
+            font-size: 16px;
+            color: var(--color-text-secondary);
+            margin-bottom: 60px;
+            max-width: 800px;
+        }
+        section.component-section {
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid var(--color-border-neutral);
+            margin-bottom: 40px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        section.component-section h2 {
+            font-family: var(--font-family-heading);
+            font-size: 20px;
+            color: var(--color-core-neutral-500);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--color-core-neutral-100);
+        }
+        
+        /* Utility classes for demo display */
+        .demo-canvas {
+            position: relative;
+            background: var(--color-core-neutral-50);
+            padding: 24px;
+            border-radius: 8px;
+            border: 1px dashed var(--color-border-neutral);
+        }
+        .demo-canvas.dark {
+            background: var(--color-core-charcoal);
+        }
+
+        /* =========================================
+           GEM_08 COMPONENT CSS AGGREGATION
+           ========================================= */
+
+        /* 1. Standard Top Navigation */
+        .top-nav-header-default {
+            background-color: var(--color-brand-primary);
+            color: var(--color-text-on-primary);
+            height: var(--size-height-top-nav);
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+        .top-nav-header-default .top-nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            width: 100%;
+            padding: 0 var(--space-3);
+            gap: var(--space-3);
+        }
+        .top-nav-header-default .top-nav-logo { flex-shrink: 0; }
+        .top-nav-header-default .top-nav-logo span {
+            font-family: var(--font-family-heading);
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text-on-primary);
+        }
+        .top-nav-links {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            margin-left: var(--space-3);
+            flex-grow: 1;
+        }
+        .nav-link-default {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            padding: 0 var(--space-2);
+            height: var(--size-height-top-nav);
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-medium);
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: background-color 150ms ease-out, color 150ms ease-out;
+            border: 2px solid transparent;
+            background-color: transparent;
+            cursor: pointer;
+        }
+        .nav-link-default:hover {
+            background-color: var(--color-background-interactive-hover);
+            color: white;
+        }
+        .nav-link-default.active {
+            position: relative;
+            color: white;
+        }
+        .nav-link-default.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: var(--space-2);
+            right: var(--space-2);
+            height: 2px;
+            background-color: white;
+        }
+        .nav-link-default:focus-visible {
+            outline: none;
+            border-color: var(--color-brand-secondary);
+        }
+        .top-nav-header-default .top-nav-actions {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        /* 2. Alternate Top Navigation */
+        .top-nav-header-alt {
+            background-color: var(--color-brand-primary);
+            color: var(--color-text-on-primary);
+            height: var(--size-height-top-nav);
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+        .top-nav-header-alt .top-nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            width: 100%;
+            padding: 0 var(--space-3);
+            gap: var(--space-3);
+        }
+        .top-nav-header-alt .top-nav-logo { flex-shrink: 0; }
+        .top-nav-header-alt .top-nav-logo span {
+            font-family: var(--font-family-heading);
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text-on-primary);
+        }
+        .top-nav-header-alt .top-nav-search {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+        }
+        .top-nav-header-alt .search-input-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+        }
+        .top-nav-header-alt .search-input-wrapper i {
+            position: absolute;
+            left: var(--space-2);
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.7;
+            pointer-events: none;
+            color: var(--color-text-on-primary);
+        }
+        .top-nav-header-alt .search-input-wrapper input {
+            width: 100%;
+            padding: var(--space-1) var(--space-2) var(--space-1) 36px;
+            background-color: var(--color-background-interactive-hover);
+            color: var(--color-text-on-primary);
+            border: 1px solid var(--color-border-interactive);
+            border-radius: var(--radius-md);
+        }
+        .top-nav-header-alt .search-input-wrapper input::placeholder {
+            color: var(--color-text-on-primary);
+            opacity: 0.7;
+        }
+        .top-nav-header-alt .top-nav-actions {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+        .top-nav-header-alt .main-nav ul {
+            display: flex;
+            height: 100%;
+            list-style: none;
+            padding: 0; margin: 0;
+        }
+        .top-nav-link-alt {
+            color: var(--color-text-on-primary);
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: var(--size-height-top-nav);
+            width: var(--size-height-top-nav);
+            text-decoration: none;
+        }
+        .top-nav-link-alt:hover {
+            background-color: var(--color-background-interactive-hover);
+            opacity: 1;
+        }
+        .top-nav-link-alt[aria-current="page"] { border-bottom: 2px solid var(--color-core-white); opacity: 1; }
+
+        /* 3. Sidebar Navigation */
+        .sidebar-nav {
+            background-color: var(--color-background-container);
+            border-right: 1px solid var(--color-border-neutral);
+            width: 280px;
+            padding: var(--space-3);
+            border-radius: var(--radius-lg);
+        }
+        .sidebar-header h1 {
+            color: var(--color-text-primary);
+            font-family: var(--font-family-heading);
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--space-3);
+            margin-top: 0;
+        }
+        .sidebar-nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: var(--space-3);
+        }
+        .folder-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            padding: 10px var(--space-1);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--color-text-secondary);
+            font-weight: var(--font-weight-medium);
+            transition: background-color 150ms ease-out, color 150ms ease-out;
+        }
+        .folder-item i {
+            font-size: 20px;
+            color: currentColor;
+        }
+        .folder-item:hover {
+            background-color: var(--color-background-page);
+            color: var(--color-text-primary);
+        }
+        .folder-item.is-unread span {
+            font-weight: var(--font-weight-bold);
+        }
+        .folder-item[aria-selected="true"] { 
+            background-color: var(--color-background-selected); 
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-bold); 
+        }
+        .sidebar-footer {
+            border-top: 1px solid var(--color-border-neutral);
+            padding-top: var(--space-2);
+        }
+        .usage-label {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--space-1);
+        }
+
+        /* 4. Application Card Section */
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            margin-top: 32px;
+        }
+        .section-title {
+            font-family: var(--font-family-heading, sans-serif);
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--color-core-neutral-800);
+            margin: 0;
+        }
+        .section-link {
+            font-size: 13px;
+            color: var(--color-brand-primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .section-link:hover { text-decoration: underline; }
+        .app-card-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        @media (max-width: 768px) { .app-card-grid { grid-template-columns: 1fr; } }
+        .app-card {
+            background: var(--color-background-container);
+            border: 1px solid var(--color-border-neutral);
+            border-radius: 4px;
+            padding: 24px;
+            text-align: center;
+            position: relative;
+            display: block;
+            text-decoration: none;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+        }
+        .app-card:hover::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border: 2px solid var(--color-brand-primary);
+            border-radius: 4px;
+            pointer-events: none;
+        }
+        .app-card .content { display: flex; flex-direction: column; align-items: center; }
+        .app-card i {
+            font-size: 32px;
+            color: var(--color-brand-primary);
+            margin-bottom: 12px;
+            display: block;
+        }
+        .app-card span {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        /* 5. Forms & Fields */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-1);
+            margin-bottom: var(--space-2);
+            width: 300px;
+        }
+        .form-group label {
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-medium);
+            font-size: var(--font-size-sm);
+        }
+        .form-group input[type="email"],
+        .form-group input[type="password"],
+        .form-group input[type="text"],
+        .form-group input[type="date"] {
+            background-color: var(--color-background-container);
+            border: 1px solid var(--color-border-interactive);
+            border-radius: var(--radius-md);
+            color: var(--color-text-primary);
+            padding: var(--space-1) var(--space-2);
+            font-size: var(--font-size-base);
+            font-family: var(--font-family-body);
+            transition: border-color 150ms ease-out; 
+            width: 100%;
+            box-shadow: none;
+        }
+        .form-group input:focus-visible {
+            border-color: var(--color-brand-secondary);
+            box-shadow: none;
+            outline: 2px solid var(--color-brand-secondary);
+            outline-offset: 1px;
+        }
+        .password-wrapper { position: relative; display: flex; }
+        .password-wrapper input { flex-grow: 1; padding-right: 36px; }
+        .password-toggle-icon {
+            position: absolute;
+            right: 0; top: 0; bottom: 0;
+            padding: var(--space-1);
+            color: var(--color-text-secondary);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .password-toggle-icon:hover { color: var(--color-text-primary); }
+
+        /* 6. Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-1);
+            font-family: var(--font-family-body);
+            font-weight: var(--font-weight-medium);
+            font-size: var(--font-size-base);
+            padding: 10px var(--space-2);
+            border-radius: var(--radius-md);
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: background-color 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out, opacity 150ms ease-out, transform 100ms ease-out;
+            text-decoration: none;
+        }
+        .btn:focus-visible {
+            outline: 2px solid var(--color-brand-secondary);
+            outline-offset: 2px;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+        .btn-primary {
+            background-color: var(--color-brand-primary);
+            color: var(--color-text-on-primary);
+            border-color: var(--color-brand-primary);
+        }
+        .btn-primary:hover:not(:disabled) {
+            background-color: var(--color-core-charcoal);
+            border-color: var(--color-core-charcoal);
+        }
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--color-brand-primary);
+            border-color: var(--color-brand-primary);
+        }
+        .btn-secondary:hover:not(:disabled) { background-color: var(--color-core-neutral-100); }
+        .btn-tertiary {
+            background-color: transparent;
+            color: var(--color-text-secondary);
+            border-color: transparent;
+        }
+        .btn-tertiary:hover:not(:disabled) {
+            background-color: var(--color-background-page);
+            color: var(--color-text-primary);
+        }
+        .btn-icon {
+            background-color: transparent;
+            color: var(--color-text-secondary);
+            border-color: transparent;
+            padding: var(--space-1);
+            font-size: 20px;
+        }
+        .btn-icon:hover:not(:disabled) {
+            background-color: var(--color-background-page);
+            color: var(--color-text-primary);
+            border-color: transparent;
+        }
+        .loading-spinner {
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--radius-full);
+            border-top-color: var(--color-core-white);
+            animation: spin 1s ease-in-out infinite;
+        }
+        .btn-secondary .loading-spinner {
+            border: 2px solid var(--color-core-neutral-200);
+            border-top-color: var(--color-brand-primary);
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* 7. Toasts */
+        .toast-container-demo {
+            position: relative; /* relative for demo */
+            display: inline-block;
+        }
+        .toast-content-wrapper {
+            background-color: var(--color-background-container);
+            border: 2px solid var(--color-brand-secondary);
+            border-radius: var(--radius-md);
+            padding: var(--space-2);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            box-shadow: none;
+        }
+        .toast-content-wrapper i {
+            color: var(--color-brand-secondary);
+            font-size: 24px;
+        }
+        .toast-content-wrapper span {
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-medium);
+        }
+
+        /* 8. Indicators & Patterns */
+        .tooltip-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-right: 20px;
+        }
+        .tooltip-content {
+            position: absolute;
+            bottom: calc(100% + var(--space-1));
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--color-core-neutral-200);
+            color: var(--color-text-primary);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            width: 200px;
+            text-align: center;
+            opacity: 1; /* Force visible for demo */
+            z-index: 30;
+        }
+        .tooltip-content::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px;
+            border-style: solid;
+            border-color: var(--color-core-neutral-200) transparent transparent transparent;
+        }
+        .usage-bar {
+            width: 100%;
+            height: 8px;
+            background-color: var(--color-core-neutral-200);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+        .usage-bar-fill {
+            height: 100%;
+            border-radius: var(--radius-full);
+            transition: width 500ms ease-out;
+        }
+        .usage-bar-fill-danger { background-color: var(--color-status-danger); }
+        .list { display: flex; flex-direction: column; gap: 4px; width: 300px; }
+        .list-item {
+            padding: var(--space-2);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border-neutral);
+            background-color: var(--color-core-neutral-100);
+            color: var(--color-text-secondary);
+            transition: all 150ms ease-out;
+            font-weight: var(--font-weight-regular);
+        }
+        .list-item:hover { background-color: var(--color-core-neutral-200); }
+        .is-unread {
+            background-color: var(--color-background-container);
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-bold);
+        }
+
+        /* 9. Skeleton Loaders */
+        @keyframes pulse { 50% { opacity: 0.5; } }
+        .skeleton-loader {
+            background-color: var(--color-core-neutral-200);
+            border-radius: var(--radius-sm);
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .skeleton-line { height: 16px; margin-bottom: var(--space-1); width: 100%; }
+        .skeleton-line-short { width: 60%; }
+        .skeleton-wrapper { width: 300px; }
+
+        /* 10. Hero Banner */
+        .hero-banner {
+            width: 100%;
+            height: 320px;
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--radius-lg);
+            margin-bottom: 32px;
+            background-color: #111;
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-image: url('https://placehold.co/1200x400/222/999?text=Hero+Image'); /* Fallback */
+        }
+        .hero-banner-content {
+            position: absolute;
+            bottom: 32px;
+            left: 32px;
+            z-index: 2;
+            width: auto;
+            max-width: 480px;
+            background-color: var(--color-core-white);
+            padding: 32px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border-neutral);
+        }
+        .hero-banner-content h1 {
+            font-family: var(--font-family-heading);
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-core-black);
+            margin-bottom: 8px;
+            margin-top: 0;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+        .hero-banner-content p {
+            color: var(--color-text-secondary);
+            font-size: 15px;
+            margin: 0;
+        }
+        .hero-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.3);
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 3;
+            transition: 0.2s;
+            opacity: 0;
+            font-size: 20px;
+        }
+        .hero-banner:hover .hero-arrow { opacity: 1; }
+        .hero-arrow:hover { background: rgba(0,0,0,0.6); }
+        .hero-arrow.prev { left: 24px; }
+        .hero-arrow.next { right: 24px; }
+        .hero-indicators {
+            position: absolute;
+            bottom: 32px;
+            right: 32px;
+            display: flex;
+            gap: 8px;
+            z-index: 3;
+        }
+        .hero-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .hero-dot.active { background: white; transform: scale(1.2); }
+
+        /* 11. Accented Dropdown Menu */
+        .relative { position: relative; display: inline-block; }
+        .dropdown-menu-accent {
+            background-color: var(--color-core-white);
+            color: var(--color-text-primary);
+            position: absolute;
+            top: 100%;
+            right: 0; /* Or left depending on flow */
+            left: 0; /* For demo */
+            z-index: 50;
+            padding: 8px 0;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border-neutral);
+            min-width: 240px;
+            display: block; /* Force visible for demo */
+            margin-top: 8px;
+        }
+        .dropdown-menu-accent::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 12px; bottom: 12px;
+            width: 4px;
+            background-color: var(--color-brand-primary);
+            border-radius: 0 2px 2px 0;
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 8px 24px;
+            transition: background-color 0.1s;
+            text-decoration: none;
+            color: var(--color-text-primary);
+            font-size: 14px;
+        }
+        .dropdown-item:hover { background-color: var(--color-core-neutral-100); }
+        .dropdown-item i {
+            font-size: 18px;
+            color: var(--color-text-secondary);
+            width: 20px;
+            text-align: center;
+        }
+        .dropdown-divider {
+            height: 1px;
+            background-color: var(--color-border-neutral);
+            margin: 6px 0;
+        }
+        .dropdown-header {
+            padding: 8px 24px 4px 24px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--color-text-secondary);
+            font-weight: 600;
+        }
+
+        /* 12. Application Tabs */
+        .app-tabs {
+            display: flex;
+            gap: var(--space-3);
+            border-bottom: 2px solid var(--color-border-neutral);
+            margin-bottom: var(--space-3);
+        }
+        .app-tabs a {
+            padding: var(--space-1) 0;
+            margin-bottom: -2px;
+            font-weight: var(--font-weight-medium);
+            color: var(--color-text-secondary);
+            border-bottom: 2px solid transparent;
+            transition: border-color 150ms ease-out, color 150ms ease-out;
+            text-decoration: none;
+        }
+        .app-tabs a:hover { color: var(--color-text-primary); }
+        .app-tabs a.active {
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-semibold);
+            border-bottom-color: var(--color-brand-secondary);
+        }
+
+        /* 13. Interactive Data Table */
+        .app-table-wrapper {
+            border: 1px solid var(--color-border-neutral);
+            border-radius: var(--radius-lg);
+            background: var(--color-background-container);
+            overflow: hidden;
+            width: 100%;
+        }
+        .app-table { width: 100%; border-collapse: collapse; }
+        .app-table th {
+            background: var(--color-core-neutral-100);
+            text-transform: uppercase;
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            padding: 12px 16px;
+            text-align: left;
+        }
+        .app-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--color-border-neutral);
+            vertical-align: middle;
+        }
+        .action-icon-persistent {
+            color: var(--color-text-secondary);
+            font-size: 20px;
+            padding: 6px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-left: 4px;
+        }
+        .action-icon-persistent:hover {
+            background-color: var(--color-core-neutral-200);
+            color: var(--color-text-primary);
+        }
+        .action-icon-persistent.action-danger:hover {
+            background-color: #FEE2E2;
+            color: var(--color-core-status-danger);
+        }
+        .actions-btns-wrap { display: none; align-items: center; gap: 10px; }
+        .actions-btns-wrap.visible { display: flex; }
+
+        /* 14. Sidebar Primary Action */
+        .sidebar-header-action { margin-bottom: var(--space-2); width: 280px; }
+        .btn-primary.w-100 { width: 100%; }
+
+        /* 15. Universal Input Dialog (Mocked as inline for visual) */
+        .modal-mock {
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border-neutral);
+            max-width: 500px;
+            background: #fff;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .modal-header { padding: 16px; border-bottom: 1px solid var(--color-border-neutral); display: flex; justify-content: space-between; align-items: center; }
+        .modal-title { margin: 0; font-family: var(--font-family-heading); font-weight: bold; font-size: 20px; }
+        .modal-body { padding: 16px; }
+        .modal-footer { padding: 16px; display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid var(--color-border-neutral); }
+
+        /* 16. Breadcrumb Title */
+        .breadcrumb-hostopia {
+            display: flex;
+            align-items: center;
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            font-family: var(--font-family-heading);
+            color: var(--color-text-primary);
+            list-style: none;
+            padding: 0; margin: 0;
+        }
+        .breadcrumb-hostopia li { display: flex; align-items: center; }
+        .breadcrumb-hostopia li + li::before {
+            content: "/";
+            margin: 0 8px;
+            color: var(--color-text-secondary);
+            font-weight: 700;
+        }
+        .breadcrumb-hostopia a {
+            color: var(--color-text-primary);
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .breadcrumb-hostopia a:hover { opacity: 1; color: var(--color-brand-secondary); }
+        .breadcrumb-hostopia .active { opacity: 1; cursor: default; }
+
+        /* 17. Object Inspector Modal Styles */
+        .file-preview-pane {
+            background-color: var(--color-core-neutral-50);
+            border: 1px solid var(--color-border-neutral);
+            border-radius: var(--radius-lg);
+            display: flex; align-items: center; justify-content: center;
+            min-height: 200px;
+            flex: 1;
+        }
+        .file-metadata-pane { min-width: 250px; }
+        
+        /* 20. Anchor Sidebar Navigation */
+        .sidebar-nav-anchor {
+            width: 260px;
+            background: var(--color-core-white);
+            border-right: 1px solid var(--color-core-neutral-200);
+            display: flex;
+            flex-direction: column;
+            padding-bottom: var(--space-4);
+        }
+        .nav-group-header {
+            padding: 24px 16px 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            color: var(--color-text-primary);
+        }
+        .nav-group-header i {
+            font-size: 18px;
+            color: var(--color-brand-secondary);
+        }
+        .nav-group-header span {
+            font-family: var(--font-family-heading);
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .nav-items { display: flex; flex-direction: column; padding: 0 8px; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            font-size: 13px;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            margin-bottom: 2px;
+            transition: all 150ms ease-out;
+            cursor: pointer;
+            line-height: 1.4;
+        }
+        .nav-item:hover {
+            background-color: var(--color-core-neutral-100);
+            color: var(--color-text-primary);
+        }
+        .nav-item.active {
+            background-color: var(--color-brand-secondary-light);
+            color: var(--color-text-primary);
+            font-weight: 600;
+        }
+
+        /* 21. Settings Row */
+        .settings-row {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 32px;
+            padding: 16px 32px;
+            border-bottom: 1px solid var(--color-core-neutral-100);
+            align-items: start;
+        }
+        .settings-label-group { display: flex; flex-direction: column; gap: 4px; padding-top: 8px; }
+        .settings-label { font-size: 14px; font-weight: 600; color: var(--color-core-neutral-900); }
+        .settings-description { font-size: 13px; color: var(--color-core-neutral-500); line-height: 1.4; }
+
+        /* 22. Control Panel Login */
+        .login-card-demo {
+            max-width: 400px;
+            background: #fff;
+            padding: 32px;
+            border-radius: 6px;
+            border: 1px solid #D1D5DB;
+        }
+        .toggle-wrapper { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .toggle-input { display: none; }
+        .toggle-track {
+            width: 36px; height: 20px;
+            background: #E5E7EB;
+            border-radius: 99px;
+            position: relative;
+            transition: background 0.2s;
+        }
+        .toggle-track::after {
+            content: ''; position: absolute; top: 2px; left: 2px;
+            width: 14px; height: 14px; background: #FFF;
+            border-radius: 50%; transition: transform 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        .toggle-input:checked + .toggle-track { background: var(--login-accent-color); }
+        .toggle-input:checked + .toggle-track::after { transform: translateX(16px); }
+
+        /* 23. Selection Dropdown */
+        .dropdown-menu-selection {
+            background-color: var(--color-core-white);
+            color: var(--color-text-primary);
+            position: relative; /* Relative for demo */
+            z-index: 50;
+            padding: 8px 0;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border-neutral);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            min-width: 260px;
+            display: inline-block;
+        }
+        .dropdown-item-selection {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 24px;
+            transition: background-color 0.1s;
+            text-decoration: none;
+            color: var(--color-text-primary);
+            font-size: 14px;
+        }
+        .dropdown-item-selection:hover { background-color: var(--color-core-neutral-100); }
+        .dropdown-item-selection.active {
+            font-weight: 600;
+            background-color: var(--color-core-neutral-50);
+        }
+        .dropdown-item-selection i.check {
+            opacity: 0;
+            color: var(--color-brand-primary);
+            font-size: 16px;
+        }
+        .dropdown-item-selection.active i.check { opacity: 1; }
+
+    </style>
+</head>
+<body>
+
+    <h1 class="main-title">Component Library Updates - Visual Review</h1>
+    <p class="intro">This section provides visual previews of all components described in the Hostopia Component Library (GEM_08) using the Core Design Tokens (GEM_09).</p>
+
+    <!-- 1. Standard Top Navigation -->
+    <section class="component-section">
+        <h2>1. Standard Top Navigation</h2>
+        <div class="demo-canvas">
+            <header class="top-nav-header-default">
+                <nav class="top-nav-container">
+                    <div class="top-nav-logo">
+                        <a href="#"><span>Hostopia</span></a>
+                    </div>
+                    <div class="top-nav-links">
+                        <a class="nav-link-default active" href="#">
+                            <i class="ph-fill ph-gauge"></i><span>Dashboard</span>
+                        </a>
+                        <a class="nav-link-default" href="#">
+                            <i class="ph-fill ph-globe"></i><span>Websites</span>
+                        </a>
+                    </div>
+                    <div class="top-nav-actions">
+                        <button class="nav-link-default">
+                            <i class="ph-fill ph-user-circle"></i>
+                            <span class="nav-text-mobile-hide">Account</span>
+                            <i class="ph ph-caret-down nav-text-mobile-hide"></i>
+                        </button>
+                    </div>
+                </nav>
+            </header>
+        </div>
+    </section>
+
+    <!-- 2. Alternate Top Navigation -->
+    <section class="component-section">
+        <h2>2. Alternate Top Navigation (Search Focus)</h2>
+        <div class="demo-canvas">
+            <header class="top-nav-header-alt">
+                <div class="top-nav-container">
+                    <div class="top-nav-logo">
+                        <a href="#"><span>Hostopia Mail</span></a>
+                    </div>
+                    <div class="top-nav-search">
+                        <div class="search-input-wrapper">
+                            <i class="ph ph-magnifying-glass"></i>
+                            <input type="search" placeholder="Search emails...">
+                        </div>
+                    </div>
+                    <div class="top-nav-actions">
+                        <nav class="main-nav">
+                            <ul>
+                                <li><a href="#" title="Mail" class="top-nav-link-alt" aria-current="page"><i class="ph-fill ph-envelope"></i></a></li>
+                                <li><a href="#" title="Settings" class="top-nav-link-alt"><i class="ph-fill ph-gear"></i></a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+        </div>
+    </section>
+
+    <!-- 3. Sidebar Navigation -->
+    <section class="component-section">
+        <h2>3. Sidebar Navigation</h2>
+        <div class="demo-canvas">
+            <aside class="sidebar-nav">
+                <div class="sidebar-header">
+                    <h1>Files</h1>
+                </div>
+                <nav class="sidebar-nav-list">
+                    <a href="#" class="folder-item" aria-selected="true">
+                        <i class="ph-fill ph-files"></i>
+                        <span>All Files</span>
+                    </a>
+                    <a href="#" class="folder-item is-unread">
+                        <i class="ph-fill ph-folder"></i>
+                        <span>Projects</span>
+                    </a>
+                    <a href="#" class="folder-item">
+                        <i class="ph-fill ph-trash"></i>
+                        <span>Trash</span>
+                    </a>
+                </nav>
+                <div class="sidebar-footer">
+                    <div class="usage-label">Usage 9 GB / 10 GB (92%)</div>
+                    <div class="usage-bar">
+                        <div class="usage-bar-fill usage-bar-fill-danger" style="width: 92%;"></div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- 4. Application Card Section -->
+    <section class="component-section">
+        <h2>4. Application Card Section</h2>
+        <div class="demo-canvas">
+            <div class="application-section">
+                <div class="section-header">
+                    <h2 class="section-title">Quick Access</h2>
+                    <a href="#" class="section-link">View All Apps</a>
+                </div>
+                <div class="app-card-grid">
+                    <a href="#" class="app-card">
+                        <div class="content">
+                            <i class="ph-fill ph-squares-four"></i>
+                            <span>Web Apps</span>
+                        </div>
+                    </a>
+                    <a href="#" class="app-card">
+                        <div class="content">
+                            <i class="ph-fill ph-globe-simple"></i>
+                            <span>Domain Manager</span>
+                        </div>
+                    </a>
+                    <a href="#" class="app-card">
+                        <div class="content">
+                            <i class="ph-fill ph-envelope"></i>
+                            <span>Email Manager</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Forms & Fields -->
+    <section class="component-section">
+        <h2>5. Forms & Fields</h2>
+        <div class="demo-canvas">
+            <div class="form-group">
+                <label for="email-demo">Email Address</label>
+                <input type="email" id="email-demo" placeholder="you@example.com">
+            </div>
+            <div class="form-group">
+                <label for="password-demo">Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password-demo" value="password123">
+                    <button class="password-toggle-icon" aria-label="Show password">
+                        <i class="ph ph-eye"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Buttons -->
+    <section class="component-section">
+        <h2>6. Buttons</h2>
+        <div class="demo-canvas">
+            <div style="display:flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+                <!-- Primary -->
+                <button class="btn btn-primary">Primary</button>
+                
+                <!-- Primary with Icon -->
+                <button class="btn btn-primary">
+                    <i class="ph-fill ph-plus-circle"></i>
+                    <span>Primary</span>
+                </button>
+
+                <!-- Secondary -->
+                <button class="btn btn-secondary">Secondary</button>
+
+                <!-- Tertiary -->
+                <button class="btn btn-tertiary">Tertiary</button>
+
+                <!-- Icon Only -->
+                <button class="btn btn-icon" aria-label="Delete">
+                    <i class="ph-fill ph-trash"></i>
+                </button>
+
+                <!-- Loading -->
+                <button class="btn btn-primary" disabled>
+                    <div class="loading-spinner"></div>
+                    <span>Loading</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. Overlays & Notifications -->
+    <section class="component-section">
+        <h2>7. Overlays & Notifications (Toasts)</h2>
+        <div class="demo-canvas">
+            <div class="toast-container-demo">
+                <div class="toast-content-wrapper">
+                    <i class="ph-fill ph-info"></i>
+                    <span>This is a toast notification.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. Indicators & Patterns -->
+    <section class="component-section">
+        <h2>8. Indicators & Patterns</h2>
+        <div class="demo-canvas">
+            <!-- Tooltip -->
+            <div class="tooltip-wrapper">
+                <button class="btn btn-icon" aria-label="Info">
+                    <i class="ph-fill ph-question"></i>
+                </button>
+                <div class="tooltip-content">
+                    This is a helpful tooltip.
+                </div>
+            </div>
+
+            <!-- List States -->
+            <div class="list" style="margin-top: 24px;">
+                <div class="list-item is-unread" aria-selected="true">Selected & Unread</div>
+                <div class="list-item">Standard (Read)</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. Skeleton Loaders -->
+    <section class="component-section">
+        <h2>9. Skeleton Loaders</h2>
+        <div class="demo-canvas">
+            <div class="skeleton-wrapper">
+                <div class="skeleton-line skeleton-loader"></div>
+                <div class="skeleton-line skeleton-line-short skeleton-loader"></div>
+                <div class="skeleton-line skeleton-loader" style="height: 100px; margin-top: 16px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. Hero Banner -->
+    <section class="component-section">
+        <h2>10. Hero Banner</h2>
+        <div class="demo-canvas">
+            <div class="hero-banner">
+                <!-- Navigation -->
+                <div class="hero-arrow prev"><i class="ph ph-caret-left"></i></div>
+                <div class="hero-arrow next"><i class="ph ph-caret-right"></i></div>
+                
+                <!-- Floating Card -->
+                <div class="hero-banner-content">
+                    <h1>Manage Your Digital Presence</h1>
+                    <p>Access all your tools in one place.</p>
+                </div>
+                
+                <!-- Dots -->
+                <div class="hero-indicators">
+                    <div class="hero-dot active"></div>
+                    <div class="hero-dot"></div>
+                    <div class="hero-dot"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 11. Accented Dropdown Menu -->
+    <section class="component-section">
+        <h2>11. Accented Dropdown Menu</h2>
+        <div class="demo-canvas" style="min-height: 200px;">
+            <div class="dropdown-menu-accent">
+                <div class="dropdown-header">User Settings</div>
+                <a href="#" class="dropdown-item">
+                    <i class="ph ph-user"></i><span>Profile</span>
+                </a>
+                <a href="#" class="dropdown-item">
+                    <i class="ph ph-credit-card"></i><span>Billing</span>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item">
+                    <i class="ph ph-sign-out"></i><span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 12. Application Tabs -->
+    <section class="component-section">
+        <h2>12. Application Tabs</h2>
+        <div class="demo-canvas">
+            <div class="app-tabs">
+                <a href="#" class="active">Active Tab</a>
+                <a href="#">Inactive Tab</a>
+                <a href="#">Inactive Tab</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 13. Interactive Data Table -->
+    <section class="component-section">
+        <h2>13. Interactive Data Table</h2>
+        <div class="demo-canvas">
+            <div class="app-table-wrapper">
+                <table class="app-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;"><input type="checkbox"></th>
+                            <th>Item Name</th>
+                            <th>Status</th>
+                            <th style="text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td><i class="ph-fill ph-file" style="vertical-align: middle; margin-right: 8px;"></i> File_Name.pdf</td>
+                            <td><span style="color: var(--color-core-status-success);">Active</span></td>
+                            <td style="text-align: right;">
+                                <i class="ph ph-pencil-simple action-icon-persistent" title="Edit"></i>
+                                <i class="ph ph-trash action-icon-persistent action-danger" title="Delete"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td><i class="ph-fill ph-image" style="vertical-align: middle; margin-right: 8px;"></i> Image_001.png</td>
+                            <td>Active</td>
+                            <td style="text-align: right;">
+                                <i class="ph ph-pencil-simple action-icon-persistent" title="Edit"></i>
+                                <i class="ph ph-trash action-icon-persistent action-danger" title="Delete"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- 14. Sidebar Primary Action -->
+    <section class="component-section">
+        <h2>14. Sidebar Primary Action</h2>
+        <div class="demo-canvas">
+            <div class="sidebar-header-action">
+                <button class="btn btn-primary w-100">
+                    <i class="ph-fill ph-cloud-arrow-up"></i> <span>Upload File</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 15. Universal Input Dialog -->
+    <section class="component-section">
+        <h2>15. Universal Input Dialog</h2>
+        <div class="demo-canvas">
+            <div class="modal-mock">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Folder</h5>
+                    <i class="ph ph-x" style="cursor: pointer;"></i>
+                </div>
+                <div class="modal-body">
+                    <p style="color: var(--color-text-secondary); margin-bottom: 12px;">Enter a name for the new folder.</p>
+                    <div class="form-group" style="width: 100%;">
+                        <label>Folder Name</label>
+                        <input type="text" placeholder="e.g. Invoices">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary">Cancel</button>
+                    <button class="btn btn-primary">Create</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 16. Breadcrumb Title -->
+    <section class="component-section">
+        <h2>16. Breadcrumb Title</h2>
+        <div class="demo-canvas">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb-hostopia">
+                    <li class="breadcrumb-item"><a href="#">Files</a></li>
+                    <li class="breadcrumb-item"><a href="#">Work</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Projects</li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+
+    <!-- 17. Object Inspector Modal -->
+    <section class="component-section">
+        <h2>17. Object Inspector Modal</h2>
+        <div class="demo-canvas">
+            <div class="modal-mock" style="max-width: 700px;">
+                <div class="modal-header">
+                    <h5 class="modal-title">Presentation.pdf</h5>
+                    <i class="ph ph-x"></i>
+                </div>
+                <div class="modal-body" style="display: flex; gap: 24px;">
+                    <!-- Preview -->
+                    <div class="file-preview-pane">
+                        <div style="text-align: center;">
+                            <i class="ph ph-file-pdf" style="font-size: 64px; color: var(--color-text-secondary);"></i>
+                            <div style="margin-top: 8px; color: var(--color-text-secondary);">Preview</div>
+                        </div>
+                    </div>
+                    <!-- Metadata -->
+                    <div class="file-metadata-pane">
+                        <h6 style="font-weight: bold; margin-bottom: 16px; margin-top: 0;">Details</h6>
+                        <div style="display: grid; grid-template-columns: 80px 1fr; gap: 8px; font-size: 14px;">
+                            <div style="color: var(--color-text-secondary);">Size</div>
+                            <div>2.4 MB</div>
+                            <div style="color: var(--color-text-secondary);">Modified</div>
+                            <div>Oct 24, 2023</div>
+                        </div>
+                        <div style="margin-top: 24px;">
+                            <button class="btn btn-primary" style="width: 100%;">Download</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 20. Anchor Sidebar Navigation -->
+    <section class="component-section">
+        <h2>20. Anchor Sidebar Navigation</h2>
+        <div class="demo-canvas">
+            <nav class="sidebar-nav-anchor">
+                <div class="nav-group-header">
+                    <i class="ph-fill ph-user-circle"></i>
+                    <span>Profile</span>
+                </div>
+                <div class="nav-items">
+                    <a href="#" class="nav-item active">Personal Info</a>
+                    <a href="#" class="nav-item">Security</a>
+                </div>
+
+                <div class="nav-group-header">
+                    <i class="ph-fill ph-gear"></i>
+                    <span>Preferences</span>
+                </div>
+                <div class="nav-items">
+                    <a href="#" class="nav-item">Notifications</a>
+                    <a href="#" class="nav-item">Language</a>
+                </div>
+            </nav>
+        </div>
+    </section>
+
+    <!-- 21. Settings Row -->
+    <section class="component-section">
+        <h2>21. Settings Row</h2>
+        <div class="demo-canvas">
+            <div class="settings-row">
+                <div class="settings-label-group">
+                    <label class="settings-label">Dark Mode</label>
+                    <span class="settings-description">Enable dark appearance.</span>
+                </div>
+                <div class="settings-input-wrapper">
+                    <!-- Toggle Mock -->
+                    <label class="toggle-wrapper">
+                        <input type="checkbox" class="toggle-input" checked>
+                        <div class="toggle-track"></div>
+                        <span>On</span>
+                    </label>
+                </div>
+            </div>
+            <div class="settings-row">
+                <div class="settings-label-group">
+                    <label class="settings-label">Username</label>
+                    <span class="settings-description">Public display name.</span>
+                </div>
+                <div class="settings-input-wrapper">
+                    <input type="text" value="HostopiaUser" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 22. Login Pattern -->
+    <section class="component-section">
+        <h2>22. Control Panel Login</h2>
+        <div class="demo-canvas" style="display: flex; justify-content: center;">
+            <div class="login-card-demo">
+                <h1 style="font-family: var(--font-family-heading); font-size: 24px; margin-top: 0;">Welcome back</h1>
+                <div class="form-group" style="width: 100%;">
+                    <label>Email</label>
+                    <input type="text" placeholder="user@example.com">
+                </div>
+                <div class="form-group" style="width: 100%;">
+                    <label>Password</label>
+                    <input type="password" placeholder="••••••">
+                </div>
+                <div style="margin-bottom: 24px;">
+                    <label class="toggle-wrapper">
+                        <input type="checkbox" class="toggle-input">
+                        <div class="toggle-track"></div>
+                        <span>Remember me</span>
+                    </label>
+                </div>
+                <button class="btn btn-primary" style="width: 100%;">Log In</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 23. Selection Dropdown -->
+    <section class="component-section">
+        <h2>23. Selection Dropdown</h2>
+        <div class="demo-canvas">
+            <div class="dropdown-menu-selection">
+                <div class="dropdown-header">Select Domain</div>
+                <a href="#" class="dropdown-item-selection active">
+                    <span>my-new-startup.com</span>
+                    <i class="ph ph-check check"></i>
+                </a>
+                <a href="#" class="dropdown-item-selection">
+                    <span>shop.cool-gadgets.net</span>
+                    <i class="ph ph-check check"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
