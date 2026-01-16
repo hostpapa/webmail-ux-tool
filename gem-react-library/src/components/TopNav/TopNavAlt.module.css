@@ -1,13 +1,13 @@
 .headerAlt {
     background-color: var(--color-brand-primary);
     color: var(--color-text-on-primary);
-    height: var(--size-height-top-nav);
-    /* Should be 64px based on nav-menu.html */
+    height: 64px;
+    /* Matches nav-menu.html explicit height */
     width: 100%;
     display: flex;
     align-items: center;
-    padding: 0 var(--space-6);
-    /* Matches nav-menu.html */
+    padding: 0 24px;
+    /* Matches nav-menu.html --space-6 */
     z-index: 1200;
 }
 
@@ -18,7 +18,8 @@
     height: 100%;
     width: 100%;
     padding: 0;
-    gap: var(--space-3);
+    gap: 12px;
+    /* Matches nav-menu.html --space-3 */
 }
 
 .logo {
@@ -43,7 +44,8 @@
     justify-content: center;
     max-width: 640px;
     /* From nav-menu.html */
-    margin: 0 var(--space-4);
+    margin: 0 16px;
+    /* Matches nav-menu.html --space-4 */
     position: relative;
     /* For panel positioning */
 }
@@ -57,8 +59,8 @@
 
 .searchInputWrapper i {
     position: absolute;
-    left: var(--space-3);
-    /* 12px */
+    left: 12px;
+    /* Matches nav-menu.html --space-3 */
     top: 50%;
     transform: translateY(-50%);
     pointer-events: none;
@@ -73,7 +75,7 @@
     height: 40px;
     /* From nav-menu.html */
     padding: 0 40px;
-    /* Space for icons */
+    /* Space for icons (original 40px works well for 18px icon + 12px padding) */
     background-color: rgba(255, 255, 255, 0.1);
     /* --bg-search */
     color: var(--color-text-on-primary);
@@ -99,7 +101,7 @@
 .advancedSearchTrigger {
     position: absolute;
     right: 8px;
-    /* var(--space-2) */
+    /* Matches nav-menu.html --space-2 */
     background: none;
     border: none;
     color: rgba(255, 255, 255, 0.7);
@@ -129,11 +131,11 @@
     border-top: none;
     border-radius: 0 0 4px 4px;
     padding: 24px;
-    /* var(--space-6) */
+    /* Matches nav-menu.html --space-6 */
     display: none;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
-    /* var(--space-4) */
+    /* Matches nav-menu.html --space-4 */
     z-index: 1010;
     margin-top: -1px;
     /* Overlap border */
@@ -209,7 +211,8 @@
     height: 100%;
     width: 250px;
     /* Fixed width */
-    gap: var(--space-4);
+    gap: 16px;
+    /* Matches nav-menu.html --space-4 */
 }
 
 .mainNavUl {
@@ -219,7 +222,8 @@
     margin: 0;
     padding: 0;
     align-items: center;
-    gap: var(--space-4);
+    gap: 16px;
+    /* Matches nav-menu.html --space-4 */
 }
 
 .linkAlt {
@@ -264,7 +268,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    /* var(--space-2) */
+    /* Matches nav-menu.html --space-2 */
     cursor: pointer;
     color: rgba(255, 255, 255, 0.7);
     background: none;
@@ -288,7 +292,7 @@
     border-radius: 4px;
     margin-top: 8px;
     padding: 8px 0;
-    /* var(--space-2) */
+    /* Matches nav-menu.html --space-2 */
     display: flex;
     flex-direction: column;
     z-index: 1010;
@@ -298,7 +302,7 @@
 
 .menuHeader {
     padding: 12px 16px;
-    /* var(--space-3) var(--space-4) */
+    /* Matches nav-menu.html space-3 space-4 */
     border-bottom: 1px solid var(--color-border-neutral);
     margin-bottom: 8px;
 }
