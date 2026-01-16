@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostopia Alternate Top Navigation</title>
+    <!-- Fonts -->
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        /* =========================================
+           GEM_09: Core Design Tokens
+           ========================================= */
+        :root {
+            /* -- Colors -- */
+            --color-core-white: #FFFFFF;
+            --color-core-charcoal: #25282A;
+            --color-core-neutral-50: #F9FAFB;
+            --color-core-neutral-100: #F3F4F6;
+            --color-core-neutral-200: #E5E7EB;
+            --color-core-neutral-300: #D1D5DB;
+            --color-core-neutral-500: #6B7280;
+            --color-core-status-danger: #EF4444;
+            --color-brand-primary: var(--color-core-charcoal);
+            --color-brand-secondary: #2CADB2;
+            --color-brand-secondary-hover: #249296;
+
+            /* -- Semantic Colors (Mapping to Tokens) -- */
+            --bg-header: var(--color-brand-primary);
+            --text-header-primary: var(--color-core-white);
+            --text-header-secondary: rgba(255, 255, 255, 0.7);
+            --bg-search: rgba(255, 255, 255, 0.1);
+            --border-search: rgba(255, 255, 255, 0.2);
+            --bg-panel: var(--color-core-white);
+            --border-panel: var(--color-core-neutral-200);
+            --text-primary: var(--color-core-charcoal);
+            --text-secondary: var(--color-core-neutral-500);
+
+            /* -- Typography -- */
+            --font-family-heading: 'Satoshi', sans-serif;
+            --font-family-body: 'Inter', sans-serif;
+            --font-size-sm: 13px;
+            --font-size-base: 14px;
+
+            /* -- Spacing -- */
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-6: 24px;
+
+            /* -- Z-Indices (GEM_09) -- */
+            --z-sticky: 1000;
+            --z-dropdown: 1010;
+            --z-modal: 1020;
+
+            /* -- Motion (GEM_01) -- */
+            --ease-out-hostopia: cubic-bezier(0, 0, 0.58, 1.0);
+            --duration-base: 0.3s;
+        }
+
+        /* =========================================
+           Reset & Base
+           ========================================= */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family-body);
+            background-color: var(--color-core-neutral-50);
+            min-height: 100vh;
+        }
+
+        /* Accessibility: Strict Focus Visibility */
+        *:focus-visible {
+            outline: none;
+            box-shadow: none;
+            /* NO SHADOW */
+            border: 2px solid var(--color-brand-secondary);
+            border-radius: 4px;
+        }
+
+        /* Section Dividers for Demo */
+        h3.section-label {
+            margin: 40px 24px 10px;
+            font-family: var(--font-family-heading);
+            color: var(--color-brand-primary);
+        }
+
+        /* =========================================
+           Component: Top Navigation (Alternate)
+           Reference: GEM_08_Component_Library.md
+           ========================================= */
+        .top-nav-header-alt {
+            height: 64px;
+            background-color: var(--bg-header);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--space-6);
+            position: relative;
+            z-index: 1200;
+            /* High z-index to stay above Version 2 content */
+        }
+
+        /* -- Left: Brand -- */
+        .top-nav-brand {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            width: 250px;
+            /* Fixed width for alignment */
+            flex-shrink: 0;
+        }
+
+        .top-nav-brand img {
+            height: 32px;
+            width: auto;
+        }
+
+        /* -- Center: Search Area -- */
+        .top-nav-search-container {
+            flex: 1;
+            max-width: 640px;
+            position: relative;
+            margin: 0 var(--space-4);
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .search-icon-left {
+            position: absolute;
+            left: var(--space-3);
+            color: var(--text-header-secondary);
+            font-size: 18px;
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 40px;
+            background-color: var(--bg-search);
+            border: 1px solid var(--border-search);
+            border-radius: 4px;
+            padding: 0 40px;
+            /* Space for icons */
+            color: var(--text-header-primary);
+            font-family: var(--font-family-body);
+            font-size: var(--font-size-base);
+            transition: all var(--duration-base) var(--ease-out-hostopia);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-header-secondary);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-brand-secondary);
+            background-color: rgba(255, 255, 255, 0.15);
+            /* NO SHADOW */
+        }
+
+        .advanced-search-trigger {
+            position: absolute;
+            right: var(--space-2);
+            background: none;
+            border: none;
+            color: var(--text-header-secondary);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s var(--ease-out-hostopia);
+        }
+
+        .advanced-search-trigger:hover,
+        .advanced-search-trigger.active {
+            color: var(--text-header-primary);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* -- Right: Actions -- */
+        .top-nav-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: var(--space-4);
+            width: 250px;
+            /* Fixed width to balance Left */
+            flex-shrink: 0;
+        }
+
+        .nav-icon-link {
+            color: var(--text-header-secondary);
+            font-size: 24px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s var(--ease-out-hostopia);
+            position: relative;
+        }
+
+        .nav-icon-link:hover {
+            color: var(--text-header-primary);
+        }
+
+        .nav-icon-link.active {
+            color: var(--color-brand-secondary);
+        }
+
+        /* Separator */
+        .nav-separator {
+            width: 1px;
+            height: 24px;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Profile Dropdown Trigger */
+        .profile-container {
+            position: relative;
+        }
+
+        .profile-trigger {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            cursor: pointer;
+            color: var(--text-header-secondary);
+            background: none;
+            border: none;
+            padding: 0;
+            transition: color 0.2s var(--ease-out-hostopia);
+        }
+
+        .profile-trigger:hover,
+        .profile-trigger.active {
+            color: var(--text-header-primary);
+        }
+
+        /* =========================================
+           Extension: Advanced Search Panel
+           Principles: Functionalism, Flat Design
+           ========================================= */
+        .advanced-search-panel {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            /* Strict Flat Design: No Shadow, just border */
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            padding: var(--space-6);
+            display: none;
+            /* Hidden by default */
+            grid-template-columns: 1fr 1fr;
+            /* 2 Column Layout */
+            gap: var(--space-4);
+            z-index: var(--z-dropdown);
+            opacity: 0;
+            transform: translateY(-8px);
+            transition: opacity 0.2s, transform 0.2s;
+            border-top: 1px solid var(--border-panel);
+            /* Added top border for better definition */
+        }
+
+        .advanced-search-panel.open {
+            display: grid;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =========================================
+           Extension: Profile Dropdown Menu
+           ========================================= */
+        .profile-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 220px;
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            border-radius: 4px;
+            margin-top: 8px;
+            padding: var(--space-2) 0;
+            display: none;
+            flex-direction: column;
+            z-index: var(--z-dropdown);
+            /* Strict Flat Design: No Shadow, just border */
+        }
+
+        .profile-menu.open {
+            display: flex;
+        }
+
+        .menu-header {
+            padding: var(--space-3) var(--space-4);
+            border-bottom: 1px solid var(--border-panel);
+            margin-bottom: var(--space-2);
+        }
+
+        .user-name {
+            display: block;
+            font-weight: 600;
+            color: var(--color-core-charcoal);
+            font-size: var(--font-size-base);
+        }
+
+        .user-email {
+            display: block;
+            font-size: var(--font-size-sm);
+            color: var(--color-core-neutral-500);
+        }
+
+        .menu-item {
+            padding: var(--space-2) var(--space-4);
+            text-decoration: none;
+            color: var(--color-core-charcoal);
+            font-size: var(--font-size-base);
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            transition: background-color 0.2s;
+        }
+
+        .menu-item:hover {
+            background-color: var(--color-core-neutral-100);
+        }
+
+        .menu-item.logout {
+            color: var(--color-core-status-danger);
+            /* Fallback if var not defined: #EF4444 */
+            border-top: 1px solid var(--border-panel);
+            margin-top: var(--space-2);
+            padding-top: var(--space-3);
+        }
+
+        /* Form Elements inside Panel */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .form-label {
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            color: var(--color-core-charcoal);
+        }
+
+        .form-input,
+        .form-select {
+            height: 36px;
+            border: 1px solid var(--color-core-neutral-300);
+            border-radius: 4px;
+            padding: 0 8px;
+            font-family: var(--font-family-body);
+            font-size: var(--font-size-base);
+            width: 100%;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--color-brand-secondary);
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .panel-actions {
+            grid-column: span 2;
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--space-3);
+            margin-top: var(--space-2);
+            padding-top: var(--space-4);
+            border-top: 1px solid var(--color-core-neutral-200);
+        }
+
+        /* Buttons */
+        .btn {
+            height: 36px;
+            padding: 0 16px;
+            border-radius: 4px;
+            font-size: var(--font-size-base);
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s var(--ease-out-hostopia);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--color-core-neutral-500);
+            border: 1px solid var(--color-core-neutral-300);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--color-core-neutral-500);
+            color: var(--color-core-charcoal);
+        }
+
+        .btn-primary {
+            background-color: var(--color-brand-secondary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-brand-secondary-hover);
+        }
+
+        /* =========================================
+           Component: Mobile / Compact Layout
+           ========================================= */
+
+        /* Simulating Mobile Device Container */
+        .mobile-device-simulator {
+            width: 30%;
+            /* ~30% as requested */
+            min-width: 320px;
+            margin: 0 24px 40px;
+            border: 1px solid var(--color-core-neutral-300);
+            /* NO SHADOW */
+            background-color: #fff;
+            overflow: visible;
+            /* Changed from hidden to prevent clipping of overlays */
+            border-radius: 8px;
+            position: relative;
+            min-height: 400px;
+            /* Ensure enough space for content */
+        }
+
+        .top-nav-header-mobile {
+            height: 56px;
+            background-color: var(--bg-header);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--space-4);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .mobile-left-group {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .mobile-hamburger {
+            color: var(--text-header-secondary);
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            transition: color 0.2s var(--ease-out-hostopia);
+        }
+
+        .mobile-hamburger:hover,
+        .mobile-hamburger.active {
+            color: var(--text-header-primary);
+        }
+
+        .mobile-logo img {
+            height: 24px;
+            width: auto;
+            display: block;
+        }
+
+        .mobile-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+
+        .mobile-icon-btn {
+            color: var(--text-header-secondary);
+            font-size: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            transition: color 0.2s var(--ease-out-hostopia);
+        }
+
+        .mobile-icon-btn:hover,
+        .mobile-icon-btn.active {
+            color: var(--text-header-primary);
+        }
+
+        /* Improved Mobile Menu Overlay (Mobile Parity) */
+        .mobile-menu-overlay {
+            display: none;
+            background: var(--color-core-white);
+            padding: 0;
+            border-bottom: 1px solid var(--color-core-neutral-200);
+            position: absolute;
+            top: 56px;
+            left: 0;
+            width: 100%;
+            z-index: var(--z-dropdown);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .mobile-menu-overlay.open {
+            display: block;
+        }
+
+        /* Mobile Search Bar */
+        .mobile-search-bar {
+            display: none;
+            position: absolute;
+            top: 56px;
+            left: 0;
+            width: 100%;
+            background: var(--color-core-white);
+            padding: var(--space-3);
+            border-bottom: 1px solid var(--color-core-neutral-200);
+            z-index: var(--z-dropdown);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .mobile-search-bar.open {
+            display: block;
+        }
+
+        /* Mobile Profile Menu */
+        .mobile-profile-overlay {
+            display: none;
+            position: absolute;
+            top: 56px;
+            left: 0;
+            width: 100%;
+            background: var(--color-core-white);
+            border-bottom: 1px solid var(--color-core-neutral-200);
+            z-index: var(--z-dropdown);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .mobile-profile-overlay.open {
+            display: block;
+        }
+
+        .mobile-menu-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-4);
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--color-core-charcoal);
+            border-bottom: 1px solid var(--color-core-neutral-100);
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .mobile-menu-item:hover {
+            background-color: var(--color-core-neutral-50);
+            color: var(--color-core-accent-blue);
+        }
+
+        .mobile-menu-item i {
+            font-size: 20px;
+            color: var(--color-core-neutral-500);
+        }
+
+        .mobile-menu-item:hover i {
+            color: var(--color-brand-secondary);
+        }
+
+        /* Placeholder Content for Demo */
+        .page-content {
+            padding: 40px;
+            text-align: center;
+            color: var(--color-core-neutral-500);
+        }
+    </style>
+</head>
+
+<body>
+
+    <h3 class="section-label">Version 1: Desktop Layout</h3>
+
+    <!-- 
+      COMPONENT: Alternate Top Navigation 
+      Context: Webmail / Search-Heavy Apps
+    -->
+    <header class="top-nav-header-alt">
+
+        <!-- LEFT: Brand -->
+        <div class="top-nav-brand">
+            <a href="#">
+                <img src="image_ceb168.png" alt="Hostopia Webmail">
+            </a>
+        </div>
+
+        <!-- CENTER: Search -->
+        <div class="top-nav-search-container">
+            <div class="search-input-wrapper">
+                <i class="ph ph-magnifying-glass search-icon-left"></i>
+                <input type="text" class="search-input" placeholder="Search mail, contacts, events...">
+
+                <!-- Toggle Button -->
+                <button class="advanced-search-trigger" id="advSearchToggle" aria-label="Toggle Advanced Search">
+                    <i class="ph ph-sliders-horizontal"></i>
+                </button>
+            </div>
+
+            <!-- Advanced Search Panel -->
+            <div class="advanced-search-panel" id="advSearchPanel">
+
+                <!-- Row 1 -->
+                <div class="form-group">
+                    <label class="form-label">From</label>
+                    <input type="text" class="form-input" placeholder="Sender name or email">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">To</label>
+                    <input type="text" class="form-input" placeholder="Recipient">
+                </div>
+
+                <!-- Row 2 -->
+                <div class="form-group full-width">
+                    <label class="form-label">Subject</label>
+                    <input type="text" class="form-input" placeholder="Contains words...">
+                </div>
+
+                <!-- Row 3 -->
+                <div class="form-group">
+                    <label class="form-label">Date Range</label>
+                    <select class="form-select">
+                        <option>Any time</option>
+                        <option>Last 7 days</option>
+                        <option>Last 30 days</option>
+                        <option>Custom range...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Folder</label>
+                    <select class="form-select">
+                        <option>All Folders</option>
+                        <option>Inbox</option>
+                        <option>Sent</option>
+                        <option>Drafts</option>
+                    </select>
+                </div>
+
+                <!-- Actions -->
+                <div class="panel-actions">
+                    <button class="btn btn-secondary" id="cancelSearch">Cancel</button>
+                    <button class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Actions -->
+        <div class="top-nav-actions">
+            <!-- App Links -->
+            <a href="#" class="nav-icon-link active" aria-label="Mail">
+                <i class="ph-fill ph-envelope-simple"></i>
+            </a>
+            <a href="#" class="nav-icon-link" aria-label="Calendar">
+                <i class="ph ph-calendar"></i>
+            </a>
+            <a href="#" class="nav-icon-link" aria-label="Contacts">
+                <i class="ph ph-users"></i>
+            </a>
+            <a href="#" class="nav-icon-link" aria-label="Tasks">
+                <i class="ph ph-check-square"></i>
+            </a>
+
+            <!-- Separator -->
+            <div class="nav-separator"></div>
+
+            <!-- Profile -->
+            <div class="profile-container">
+                <button class="profile-trigger" id="profileTrigger">
+                    <i class="ph ph-user-circle" style="font-size: 28px;"></i>
+                    <i class="ph ph-caret-down" style="font-size: 14px;"></i>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div class="profile-menu" id="profileMenu">
+                    <div class="menu-header">
+                        <span class="user-name">John Doe</span>
+                        <span class="user-email">john.doe@example.com</span>
+                    </div>
+                    <a href="#" class="menu-item"><i class="ph ph-gear"></i> Settings</a>
+                    <a href="#" class="menu-item"><i class="ph ph-life-buoy"></i> Support</a>
+                    <a href="#" class="menu-item logout"><i class="ph-fill ph-sign-out"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <h3 class="section-label">Version 2: Mobile / Compact Layout</h3>
+
+    <!-- 
+      COMPONENT: Mobile Header 
+      Context: Small screens / Mobile App
+    -->
+    <div class="mobile-device-simulator">
+        <header class="top-nav-header-mobile">
+            <div class="mobile-left-group">
+                <button class="mobile-hamburger" id="mobileMenuBtn" aria-label="Menu">
+                    <i class="ph ph-list"></i>
+                </button>
+                <div class="mobile-logo">
+                    <a href="#">
+                        <img src="image_ceb168.png" alt="Hostopia Webmail">
+                    </a>
+                </div>
+            </div>
+
+            <div class="mobile-actions">
+                <button class="mobile-icon-btn" id="mobileSearchBtn" aria-label="Search">
+                    <i class="ph ph-magnifying-glass"></i>
+                </button>
+                <button class="mobile-icon-btn" id="mobileProfileBtn" aria-label="Profile">
+                    <i class="ph ph-user-circle"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Improved Mobile Menu Overlay (Parity) -->
+        <div class="mobile-menu-overlay" id="mobileMenu">
+            <a href="#" class="mobile-menu-item">
+                <i class="ph ph-envelope-simple"></i>
+                <span>Mail</span>
+            </a>
+            <a href="#" class="mobile-menu-item">
+                <i class="ph ph-calendar"></i>
+                <span>Calendar</span>
+            </a>
+            <a href="#" class="mobile-menu-item">
+                <i class="ph ph-users"></i>
+                <span>Contacts</span>
+            </a>
+            <a href="#" class="mobile-menu-item">
+                <i class="ph ph-check-square"></i>
+                <span>Tasks</span>
+            </a>
+            <a href="#" class="mobile-menu-item">
+                <i class="ph ph-gear"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+
+        <!-- Mobile Search Bar -->
+        <div class="mobile-search-bar" id="mobileSearchBar">
+            <div class="search-input-wrapper">
+                <i class="ph ph-magnifying-glass search-icon-left"></i>
+                <input type="text" class="search-input" placeholder="Search mail, contacts...">
+            </div>
+        </div>
+
+        <!-- Mobile Profile Menu -->
+        <div class="mobile-profile-overlay" id="mobileProfileMenu">
+            <div class="menu-header">
+                <span class="user-name">John Doe</span>
+                <span class="user-email">john.doe@example.com</span>
+            </div>
+            <a href="#" class="mobile-menu-item">
+                <i class="ph ph-gear"></i>
+                <span>Settings</span>
+            </a>
+            <a href="#" class="mobile-menu-item">
+                <i class="ph ph-life-buoy"></i>
+                <span>Support</span>
+            </a>
+            <a href="#" class="mobile-menu-item logout" style="color: var(--color-core-status-danger);">
+                <i class="ph-fill ph-sign-out"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+
+        <div style="padding: 20px; text-align:center; color: #999; font-size: 13px;">
+            Mobile Content Area
+        </div>
+    </div>
+
+    <div class="page-content">
+        <p>Application content goes here.</p>
+    </div>
+
+    <script>
+        // --- Logic for Search Panel ---
+        const searchToggleBtn = document.getElementById('advSearchToggle');
+        const searchPanel = document.getElementById('advSearchPanel');
+        const searchCancelBtn = document.getElementById('cancelSearch');
+
+        function toggleSearch(e) {
+            e.stopPropagation(); // Prevent bubbling
+            searchPanel.classList.toggle('open');
+            searchToggleBtn.classList.toggle('active');
+            // Close profile if open
+            profileMenu.classList.remove('open');
+            profileTrigger.classList.remove('active');
+        }
+
+        searchToggleBtn.addEventListener('click', toggleSearch);
+
+        searchCancelBtn.addEventListener('click', () => {
+            searchPanel.classList.remove('open');
+            searchToggleBtn.classList.remove('active');
+        });
+
+        // --- Logic for Profile Dropdown ---
+        const profileTrigger = document.getElementById('profileTrigger');
+        const profileMenu = document.getElementById('profileMenu');
+
+        function toggleProfile(e) {
+            e.stopPropagation(); // Prevent bubbling
+            profileMenu.classList.toggle('open');
+            profileTrigger.classList.toggle('active');
+            // Close search if open
+            searchPanel.classList.remove('open');
+            searchToggleBtn.classList.remove('active');
+        }
+
+        profileTrigger.addEventListener('click', toggleProfile);
+
+        // --- Logic for Mobile Interactions ---
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        const mobileSearchBtn = document.getElementById('mobileSearchBtn');
+        const mobileSearchBar = document.getElementById('mobileSearchBar');
+
+        const mobileProfileBtn = document.getElementById('mobileProfileBtn');
+        const mobileProfileMenu = document.getElementById('mobileProfileMenu');
+
+        function closeAllMobileOverlays() {
+            mobileMenu.classList.remove('open');
+            mobileMenuBtn.classList.remove('active');
+
+            mobileSearchBar.classList.remove('open');
+            mobileSearchBtn.classList.remove('active');
+
+            mobileProfileMenu.classList.remove('open');
+            mobileProfileBtn.classList.remove('active');
+        }
+
+        mobileMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = mobileMenu.classList.contains('open');
+            closeAllMobileOverlays();
+            if (!isOpen) {
+                mobileMenu.classList.add('open');
+                mobileMenuBtn.classList.add('active');
+            }
+        });
+
+        mobileSearchBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = mobileSearchBar.classList.contains('open');
+            closeAllMobileOverlays();
+            if (!isOpen) {
+                mobileSearchBar.classList.add('open');
+                mobileSearchBtn.classList.add('active');
+                // Focus input
+                setTimeout(() => mobileSearchBar.querySelector('input').focus(), 100);
+            }
+        });
+
+        mobileProfileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = mobileProfileMenu.classList.contains('open');
+            closeAllMobileOverlays();
+            if (!isOpen) {
+                mobileProfileMenu.classList.add('open');
+                mobileProfileBtn.classList.add('active');
+            }
+        });
+
+        // --- Global Click Listener (Close All) ---
+        document.addEventListener('click', (e) => {
+            // Close Desktop Search
+            const isClickInsideSearch = searchToggleBtn.contains(e.target) || searchPanel.contains(e.target);
+            if (!isClickInsideSearch && searchPanel.classList.contains('open')) {
+                searchPanel.classList.remove('open');
+                searchToggleBtn.classList.remove('active');
+            }
+
+            // Close Desktop Profile
+            const isClickInsideProfile = profileTrigger.contains(e.target) || profileMenu.contains(e.target);
+            if (!isClickInsideProfile && profileMenu.classList.contains('open')) {
+                profileMenu.classList.remove('open');
+                profileTrigger.classList.remove('active');
+            }
+
+            // Close Mobile Overlays
+            const isClickInsideMobile = mobileMenuBtn.contains(e.target) || mobileMenu.contains(e.target) ||
+                mobileSearchBtn.contains(e.target) || mobileSearchBar.contains(e.target) ||
+                mobileProfileBtn.contains(e.target) || mobileProfileMenu.contains(e.target);
+
+            if (!isClickInsideMobile) {
+                closeAllMobileOverlays();
+            }
+        });
+    </script>
+</body>
+
+</html>
