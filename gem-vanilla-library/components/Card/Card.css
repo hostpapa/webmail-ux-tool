@@ -1,0 +1,42 @@
+/* gem-card.css */
+.gem-card {
+    background: var(--color-background-container);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border-neutral);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.gem-card-header {
+    padding: var(--space-4);
+    border-bottom: 1px solid var(--color-border-neutral);
+}
+
+.gem-card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0 0 4px 0;
+    font-family: var(--font-family-heading);
+}
+
+.gem-card-subtitle {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.gem-card-content {
+    flex: 1;
+}
+
+.gem-card-footer {
+    padding: var(--space-4);
+    border-top: 1px solid var(--color-border-neutral);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    background-color: var(--color-core-neutral-50);
+}

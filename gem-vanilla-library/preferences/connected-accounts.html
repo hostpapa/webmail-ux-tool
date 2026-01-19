@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connected accounts | Webmail</title>
+
+    <!-- Fonts -->
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Core Styles -->
+    <link rel="stylesheet" href="../styles/design-tokens.css">
+    <link rel="stylesheet" href="../styles/index.css">
+
+    <!-- Component Styles -->
+    <link rel="stylesheet" href="../components/TopNav/TopNav.css">
+    <link rel="stylesheet" href="../components/Sidebar/Sidebar.css">
+    <link rel="stylesheet" href="../components/Button/Button.css">
+    <link rel="stylesheet" href="../components/Card/Card.css">
+    <link rel="stylesheet" href="../components/AppCard/AppCard.css">
+    <link rel="stylesheet" href="../components/Modal/Modal.css">
+    <link rel="stylesheet" href="../components/Toast/Toast.css">
+    <link rel="stylesheet" href="../components/SettingsRow/SettingsRow.css">
+
+    <!-- Component Scripts -->
+    <script src="../components/TopNav/TopNav.js"></script>
+    <script src="../components/Sidebar/Sidebar.js"></script>
+    <script src="../components/Button/Button.js"></script>
+    <script src="../components/Card/Card.js"></script>
+    <script src="../components/AppCard/AppCard.js"></script>
+    <script src="../components/Modal/Modal.js"></script>
+    <script src="../components/Toast/Toast.js"></script>
+    <script src="../components/SettingsRow/SettingsRow.js"></script>
+
+    <!-- Custom Layout Styles -->
+    <link rel="stylesheet" href="preferences.css">
+
+</head>
+
+<body>
+
+    <gem-topnav active="Mail" base=".."></gem-topnav>
+
+    <div class="page-layout">
+        <!-- SIDEBAR COMPONENT -->
+        <gem-sidebar>
+            <gem-sidebar-section title="Account" icon="ph-user">
+                <gem-sidebar-item>Profile</gem-sidebar-item>
+                <gem-sidebar-item>Date and Language</gem-sidebar-item>
+            </gem-sidebar-section>
+
+            <gem-sidebar-section title="Mail" icon="ph-envelope">
+                <gem-sidebar-item active>Connected accounts</gem-sidebar-item>
+                <gem-sidebar-item>Spam Filters</gem-sidebar-item>
+            </gem-sidebar-section>
+
+            <gem-sidebar-usage used="8.5" total="10"></gem-sidebar-usage>
+        </gem-sidebar>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <gem-card title="Connected accounts"
+                subtitle="Centralize your email by connecting external accounts. You can read, reply, and manage messages from other providers directly within your Hostopia inbox.">
+
+                <!-- EMPTY STATE VIEW -->
+                <div id="emptyState">
+                    <div class="quick-connect">
+                        <span class="quick-connect-label">Quick Connect</span>
+                        <div class="quick-icons">
+                            <button class="quick-icon-btn" title="Add Gmail"
+                                onclick="openConnectModal('Google', 'google-logo')"><i
+                                    class="ph-fill ph-google-logo"></i></button>
+                            <button class="quick-icon-btn" title="Add Microsoft"
+                                onclick="openConnectModal('Outlook', 'microsoft-outlook-logo')"><i
+                                    class="ph-fill ph-microsoft-outlook-logo"></i></button>
+                            <button class="quick-icon-btn" title="Add Yahoo"
+                                onclick="openConnectModal('Yahoo', 'envelope-simple')"><i
+                                    class="ph-fill ph-envelope-simple"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="section-label">Choose a platform to get started</div>
+
+                    <gem-app-card-grid>
+                        <gem-app-card icon="google-logo" label="Google / Gmail" brand="google"
+                            onclick="openConnectModal('Google', 'google-logo')"></gem-app-card>
+                        <gem-app-card icon="microsoft-outlook-logo" label="Outlook / Hotmail" brand="outlook"
+                            onclick="openConnectModal('Outlook', 'microsoft-outlook-logo')"></gem-app-card>
+                        <gem-app-card icon="envelope-simple" label="Yahoo Mail" brand="yahoo"
+                            onclick="openConnectModal('Yahoo', 'envelope-simple')"></gem-app-card>
+                        <gem-app-card icon="apple-logo" label="iCloud" brand="icloud"
+                            onclick="openConnectModal('iCloud', 'apple-logo')"></gem-app-card>
+                        <gem-app-card icon="envelope" label="Other (IMAP)"
+                            onclick="openConnectModal('Other', 'envelope')"></gem-app-card>
+                    </gem-app-card-grid>
+                </div>
+
+                <!-- LIST VIEW -->
+                <div id="listView" class="hidden">
+                    <div class="quick-connect">
+                        <span class="quick-connect-label">Connect Another:</span>
+                        <div class="quick-icons">
+                            <button class="quick-icon-btn" title="Add Gmail"
+                                onclick="openConnectModal('Google', 'google-logo')"><i
+                                    class="ph-fill ph-google-logo"></i></button>
+                            <button class="quick-icon-btn" title="Add Microsoft"
+                                onclick="openConnectModal('Outlook', 'microsoft-outlook-logo')"><i
+                                    class="ph-fill ph-microsoft-outlook-logo"></i></button>
+                            <button class="quick-icon-btn" title="Add Yahoo"
+                                onclick="openConnectModal('Yahoo', 'envelope-simple')"><i
+                                    class="ph-fill ph-envelope-simple"></i></button>
+                            <button class="quick-icon-btn" title="Show all" onclick="showEmptyState()"><i
+                                    class="ph-bold ph-plus"></i></button>
+                        </div>
+                    </div>
+                    <div id="accountContainer">
+                        <!-- Items injected here -->
+                    </div>
+                </div>
+
+                <div slot="footer">
+                    <gem-button variant="primary" id="saveUpdatesBtn" onclick="handleSaveUpdates()">Save
+                        Updates</gem-button>
+                </div>
+            </gem-card>
+        </main>
+    </div>
+
+    <!-- CONNECT MODAL -->
+    <gem-modal id="connectModal" title="Connect Account">
+        <p class="text-secondary text-sm" style="margin-bottom: 24px;">Enter your credentials to link your <span
+                id="platformName" style="font-weight: 700;"></span> account.</p>
+
+        <div style="display: flex; flex-direction: column;">
+            <gem-settings-row label="Email Address">
+                <input type="email" id="modalEmail" placeholder="user@example.com"
+                    style="width: 100%; padding: 10px; border: 1px solid var(--color-border-neutral); border-radius: var(--radius-md); font-family: inherit;">
+            </gem-settings-row>
+            <gem-settings-row label="Password">
+                <input type="password" id="modalPassword" placeholder="••••••••"
+                    style="width: 100%; padding: 10px; border: 1px solid var(--color-border-neutral); border-radius: var(--radius-md); font-family: inherit;">
+            </gem-settings-row>
+        </div>
+
+        <div slot="footer">
+            <gem-button variant="secondary"
+                onclick="document.getElementById('connectModal').close()">Cancel</gem-button>
+            <gem-button variant="primary" onclick="confirmConnect()">Connect Account</gem-button>
+        </div>
+    </gem-modal>
+
+    <script>
+        let currentPlatform = '';
+        let currentIcon = '';
+
+        function openConnectModal(platform, icon) {
+            currentPlatform = platform;
+            currentIcon = icon;
+            document.getElementById('platformName').textContent = platform;
+            document.getElementById('connectModal').open();
+            setTimeout(() => {
+                const input = document.getElementById('modalEmail');
+                if (input) input.focus();
+            }, 100);
+        }
+
+        function confirmConnect() {
+            const emailInput = document.getElementById('modalEmail');
+            const email = (emailInput && emailInput.value) || `user@${currentPlatform.toLowerCase()}.com`;
+            const container = document.getElementById('accountContainer');
+
+            const item = document.createElement('div');
+            item.className = 'account-list-item';
+            item.innerHTML = `
+                <div class="account-avatar"><i class="ph-fill ph-${currentIcon}"></i></div>
+                <div class="account-info">
+                    <div class="account-name">${currentPlatform} Account</div>
+                    <div class="account-email">${email}</div>
+                </div>
+                <div class="account-status">Connected</div>
+                <button class="remove-btn" title="Remove account" onclick="removeAccount(this)">
+                    <i class="ph-bold ph-trash"></i>
+                </button>
+            `;
+
+            container.appendChild(item);
+
+            // Switch views
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('listView').classList.remove('hidden');
+
+            document.getElementById('connectModal').close();
+            GemToast.show(`${currentPlatform} account connected successfully`);
+
+            // Clear inputs
+            if (emailInput) emailInput.value = '';
+            const passInput = document.getElementById('modalPassword');
+            if (passInput) passInput.value = '';
+        }
+
+        function removeAccount(btn) {
+            btn.closest('.account-list-item').remove();
+            if (document.getElementById('accountContainer').children.length === 0) {
+                showEmptyState();
+            }
+        }
+
+        function showEmptyState() {
+            document.getElementById('emptyState').classList.remove('hidden');
+            document.getElementById('listView').classList.add('hidden');
+        }
+
+        function handleSaveUpdates() {
+            const btn = document.getElementById('saveUpdatesBtn');
+            const originalContent = btn.innerHTML;
+
+            btn.setAttribute('disabled', 'true');
+            btn.innerHTML = '<i class="ph-bold ph-circle-notch animate-spin"></i> Saving...';
+
+            setTimeout(() => {
+                btn.removeAttribute('disabled');
+                btn.innerHTML = originalContent;
+                GemToast.show('Preferences saved successfully');
+            }, 1000);
+        }
+    </script>
+</body>
+
+</html>

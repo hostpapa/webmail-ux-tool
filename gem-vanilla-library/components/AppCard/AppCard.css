@@ -1,0 +1,60 @@
+/* gem-app-card.css */
+.gem-app-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 12px;
+    border: 1px solid var(--color-border-neutral);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--color-background-container);
+    text-align: center;
+    outline: none;
+    text-decoration: none;
+    min-width: 130px;
+}
+
+.gem-app-card:hover {
+    border-color: var(--color-brand-secondary);
+    background-color: var(--color-core-neutral-50);
+    transform: translateY(-1px);
+}
+
+.gem-app-card i {
+    font-size: 32px;
+    margin-bottom: 8px;
+    color: var(--color-text-secondary);
+    display: block;
+}
+
+.gem-app-card span {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+/* Brand specific icon colors */
+.gem-app-card[brand="google"] i {
+    color: #DB4437;
+}
+
+.gem-app-card[brand="outlook"] i {
+    color: #0078D4;
+}
+
+.gem-app-card[brand="yahoo"] i {
+    color: #6001D2;
+}
+
+.gem-app-card[brand="icloud"] i {
+    color: #000000;
+}
+
+.gem-app-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    padding: var(--space-4);
+}

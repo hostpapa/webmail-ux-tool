@@ -1,0 +1,25 @@
+/* mail/mail.css */
+
+.page-layout {
+    display: flex;
+    height: calc(100vh - 64px);
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-background-page);
+}
+
+.placeholder-box {
+    text-align: center;
+    color: var(--color-text-secondary);
+}
+
+.placeholder-box i {
+    font-size: 64px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}

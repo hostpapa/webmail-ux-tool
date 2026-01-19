@@ -1,0 +1,137 @@
+/* preferences/preferences.css */
+
+.page-layout {
+    display: flex;
+    height: calc(100vh - 64px);
+}
+
+.main-content {
+    flex: 1;
+    padding: var(--space-6);
+    overflow-y: auto;
+    background-color: var(--color-background-page);
+}
+
+.section-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: var(--space-4) var(--space-4) 0;
+}
+
+/* Quick Connect Bar - specific to this layout */
+.quick-connect {
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-core-neutral-50);
+    border-top: 1px solid var(--color-border-neutral);
+    border-bottom: 1px solid var(--color-border-neutral);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.quick-connect-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.quick-icons {
+    display: flex;
+    gap: 8px;
+}
+
+.quick-icon-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--color-border-neutral);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-background-container);
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 18px;
+    outline: none;
+    color: var(--color-text-secondary);
+    border: none;
+    padding: 0;
+    box-shadow: 0 0 0 1px var(--color-border-neutral);
+}
+
+.quick-icon-btn:hover {
+    box-shadow: 0 0 0 1px var(--color-brand-secondary);
+    color: var(--color-brand-secondary);
+}
+
+/* Account List View Styles */
+.hidden {
+    display: none !important;
+}
+
+.account-list-item {
+    display: flex;
+    align-items: center;
+    padding: var(--space-4);
+    border-bottom: 1px solid var(--color-border-neutral);
+    gap: var(--space-4);
+}
+
+.account-list-item:last-child {
+    border-bottom: none;
+}
+
+.account-avatar {
+    width: 40px;
+    height: 40px;
+    background: var(--color-core-neutral-100);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--color-text-secondary);
+}
+
+.account-info {
+    flex: 1;
+}
+
+.account-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--color-text-primary);
+}
+
+.account-email {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+}
+
+.account-status {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-status-success);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.remove-btn {
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    padding: 8px;
+    background: none;
+    border: none;
+    display: flex;
+    transition: color 0.2s;
+}
+
+.remove-btn:hover {
+    color: var(--color-status-danger);
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inbox - GEM Vanilla Library</title>
+
+    <!-- Fonts -->
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Core Styles -->
+    <link rel="stylesheet" href="../styles/design-tokens.css">
+    <link rel="stylesheet" href="../styles/index.css">
+
+    <!-- Component Styles -->
+    <link rel="stylesheet" href="../components/TopNav/TopNav.css">
+    <link rel="stylesheet" href="../components/Sidebar/Sidebar.css">
+
+    <!-- Component Scripts -->
+    <script src="../components/TopNav/TopNav.js"></script>
+    <script src="../components/Sidebar/Sidebar.js"></script>
+
+    <!-- Custom Layout Styles -->
+    <link rel="stylesheet" href="mail.css">
+
+</head>
+
+<body>
+
+    <gem-topnav active="Mail" base=".."></gem-topnav>
+
+    <div class="page-layout">
+        <gem-sidebar>
+            <gem-sidebar-section title="Folders" icon="ph-folder">
+                <gem-sidebar-item active>Inbox</gem-sidebar-item>
+                <gem-sidebar-item>Sent</gem-sidebar-item>
+                <gem-sidebar-item>Drafts</gem-sidebar-item>
+                <gem-sidebar-item>Trash</gem-sidebar-item>
+            </gem-sidebar-section>
+
+            <gem-sidebar-usage used="8.5" total="10"></gem-sidebar-usage>
+        </gem-sidebar>
+
+        <main class="main-content">
+            <div class="placeholder-box">
+                <i class="ph ph-envelope-open"></i>
+                <h2>Mail Interface Placeholder</h2>
+                <p>The mailbox view will be implemented here.</p>
+            </div>
+        </main>
+    </div>
+
+</body>
+
+</html>

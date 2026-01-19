@@ -3,22 +3,42 @@
  */
 
 class GemTopNav extends HTMLElement {
+    static get observedAttributes() {
+        return ['active'];
+    }
+
     connectedCallback() {
-        // Use a slight delay to ensure children are parsed
-        setTimeout(() => {
-            const fragment = document.createDocumentFragment();
-            while (this.firstChild) {
-                fragment.appendChild(this.firstChild);
-            }
+        this.render();
+    }
 
-            this.innerHTML = `
-                <header class="gem-topnav">
-                    <div class="gem-topnav-container"></div>
-                </header>
-            `;
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name === 'active' && oldValue !== newValue) {
+            this.render();
+        }
+    }
 
-            this.querySelector('.gem-topnav-container').appendChild(fragment);
-        }, 0);
+    render() {
+        const activeItem = this.getAttribute('active') || 'Mail';
+        const base = this.getAttribute('base') || '.';
+
+        this.innerHTML = `
+            <header class="gem-topnav">
+                <div class="gem-topnav-container">
+                    <gem-topnav-logo href="${base}/index.html">Hostopia</gem-topnav-logo>
+                    
+                    <gem-topnav-search placeholder="Search mail..."></gem-topnav-search>
+                    
+                    <gem-topnav-actions>
+                        <gem-topnav-link href="${base}/mail/main.html" icon="envelope-simple" title="Mail" ${activeItem === 'Mail' ? 'active' : ''}></gem-topnav-link>
+                        <gem-topnav-link href="${base}/calendar/main.html" icon="calendar" title="Calendar" ${activeItem === 'Calendar' ? 'active' : ''}></gem-topnav-link>
+                        <gem-topnav-link href="${base}/contacts/main.html" icon="users" title="Contacts" ${activeItem === 'Contacts' ? 'active' : ''}></gem-topnav-link>
+                        <gem-topnav-link href="${base}/tasks/main.html" icon="check-square" title="Tasks" ${activeItem === 'Tasks' ? 'active' : ''}></gem-topnav-link>
+                        <gem-topnav-separator></gem-topnav-separator>
+                        <gem-topnav-profile name="John Doe" email="john.doe@example.com" settings-href="${base}/preferences/connected-accounts.html"></gem-topnav-profile>
+                    </gem-topnav-actions>
+                </div>
+            </header>
+        `;
     }
 }
 
@@ -167,6 +187,7 @@ class GemTopNavProfile extends HTMLElement {
     render() {
         const name = this.getAttribute('name') || 'John Doe';
         const email = this.getAttribute('email') || 'john.doe@example.com';
+        const settingsHref = this.getAttribute('settings-href') || '#settings';
 
         this.innerHTML = `
             <div class="gem-topnav-profile">
@@ -180,7 +201,7 @@ class GemTopNavProfile extends HTMLElement {
                         <span class="gem-user-name">${name}</span>
                         <span class="gem-user-email">${email}</span>
                     </div>
-                    <a href="#settings" class="gem-menu-item"><i class="ph ph-gear"></i> Settings</a>
+                    <a href="${settingsHref}" class="gem-menu-item"><i class="ph ph-gear"></i> Settings</a>
                     <a href="#support" class="gem-menu-item"><i class="ph ph-life-buoy"></i> Support</a>
                     <a href="#logout" class="gem-menu-item gem-menu-item-logout"><i class="ph-fill ph-sign-out"></i> Logout</a>
                 </div>
