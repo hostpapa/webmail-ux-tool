@@ -1,0 +1,27 @@
+/* Core Reset */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-family-body);
+    color: var(--color-text-primary);
+    background-color: var(--color-background-page);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-family-heading);
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}

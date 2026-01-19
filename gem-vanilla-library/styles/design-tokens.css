@@ -1,0 +1,81 @@
+:root {
+    /* Neutrals */
+    --color-core-white: #FFFFFF;
+    --color-core-charcoal: #25282A;
+    --color-core-neutral-50: #F9FAFB;
+    --color-core-neutral-100: #F3F4F6;
+    --color-core-neutral-200: #E5E7EB;
+    --color-core-neutral-300: #D1D5DB;
+    --color-core-neutral-500: #6B7280;
+
+    /* Accents */
+    --color-core-accent-blue: #2CADB2;
+    --color-core-accent-blue-light: #E0F5F6;
+    --color-core-accent-amber: #F59E0B;
+
+    /* Status */
+    --color-core-status-danger: #EF4444;
+    --color-core-status-warning: #FF8400;
+    --color-core-status-success: #66BC29;
+
+    /* -- Brand Identity -- */
+    --color-brand-primary: var(--color-core-charcoal);
+    --color-brand-secondary: var(--color-core-accent-blue);
+
+    /* -- Text -- */
+    --color-text-primary: var(--color-core-charcoal);
+    --color-text-secondary: var(--color-core-neutral-500);
+    --color-text-on-primary: var(--color-core-white);
+    --color-text-interactive: var(--color-core-accent-blue);
+
+    /* -- Backgrounds -- */
+    --color-background-page: var(--color-core-neutral-50);
+    --color-background-container: var(--color-core-white);
+    --color-background-interactive-primary: var(--color-brand-primary);
+    --color-background-interactive-hover: rgba(255, 255, 255, 0.1);
+    --color-background-selected: var(--color-core-accent-blue-light);
+
+    /* -- Borders -- */
+    --color-border-neutral: var(--color-core-neutral-200);
+    --color-border-interactive: var(--color-core-neutral-300);
+
+    /* -- Status -- */
+    --color-status-danger: var(--color-core-status-danger);
+    --color-status-warning: var(--color-core-status-warning);
+    --color-status-success: var(--color-core-status-success);
+
+    /* -- Font Families -- */
+    --font-family-heading: 'Satoshi', sans-serif;
+    --font-family-body: 'Inter', sans-serif;
+
+    /* -- Font Weights -- */
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* -- Font Sizes -- */
+    --font-size-xs: 12px;
+    --font-size-sm: 13px;
+    --font-size-base: 14px;
+    --font-size-lg: 18px;
+    --font-size-xl: 20px;
+
+    /* -- Spacing -- */
+    --space-1: 8px;
+    --space-2: 16px;
+    --space-3: 24px;
+    --space-4: 32px;
+    --space-5: 40px;
+    --space-6: 48px;
+
+    /* -- Corner Radius -- */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --radius-full: 9999px;
+
+    /* -- Component Heights -- */
+    --size-height-top-nav: 48px;
+    --size-height-list-item: 52px;
+}
