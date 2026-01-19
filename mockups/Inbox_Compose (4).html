@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostopia Webmail - Compose</title>
+    
+    <!-- Fonts: Satoshi (Headings) and Inter (Body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@500,700&display=swap" rel="stylesheet">
+    
+    <!-- Icons: Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        /* =========================================
+           GEM_09: DESIGN TOKENS
+           ========================================= */
+        :root {
+            /* -- Colors: Core -- */
+            --color-core-white: #FFFFFF;
+            --color-core-charcoal: #25282A;
+            --color-core-neutral-50: #F9FAFB;
+            --color-core-neutral-100: #F3F4F6;
+            --color-core-neutral-200: #E5E7EB;
+            --color-core-neutral-300: #D1D5DB;
+            --color-core-neutral-500: #6B7280;
+            --color-core-neutral-600: #4B5563;
+            --color-core-neutral-700: #374151;
+            --color-core-neutral-900: #111827;
+
+            /* -- Colors: Brand/Semantic -- */
+            --color-brand-primary: #25282A;
+            --color-brand-secondary: #E5E7EB;
+            --color-brand-accent: #2CADB2;
+            
+            --color-text-primary: var(--color-core-charcoal);
+            --color-text-secondary: var(--color-core-neutral-500);
+            --color-text-inverse: var(--color-core-white);
+            
+            --color-bg-canvas: var(--color-core-neutral-50);
+            --color-bg-surface: var(--color-core-white);
+            --color-bg-surface-hover: var(--color-core-neutral-50);
+            
+            --color-border-subtle: var(--color-core-neutral-200);
+            --color-border-interactive: var(--color-core-neutral-300);
+            
+            /* -- Status -- */
+            --color-status-danger: #EF4444;
+            --color-status-danger-bg: #FEF2F2;
+
+            /* -- Typography -- */
+            --font-family-heading: 'Satoshi', sans-serif;
+            --font-family-body: 'Inter', sans-serif;
+            
+            --font-size-sm: 13px;
+            --font-size-base: 14px;
+            --font-size-lg: 16px;
+            --font-size-xl: 20px;
+            --font-size-2xl: 24px;
+
+            /* -- Spacing -- */
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-6: 24px;
+            --space-8: 32px;
+
+            /* -- Radius -- */
+            --radius-md: 6px;
+            --radius-lg: 8px;
+            --radius-full: 9999px;
+
+            /* -- Shadows -- */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* =========================================
+           RESET & FOUNDATIONS
+           ========================================= */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-family-body);
+            font-size: var(--font-size-base);
+            color: var(--color-text-primary);
+            background-color: var(--color-bg-canvas);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        h1, h2 { font-family: var(--font-family-heading); font-weight: 700; }
+
+        button { font-family: inherit; cursor: pointer; border: none; background: none; }
+        input, textarea, select { font-family: inherit; }
+
+        /* =========================================
+           SHARED COMPONENTS (NAV & SIDEBAR)
+           ========================================= */
+        /* Top Nav */
+        .top-nav {
+            height: 64px;
+            background-color: var(--color-bg-surface);
+            border-bottom: 1px solid var(--color-border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--space-4);
+            flex-shrink: 0;
+            z-index: 50;
+        }
+
+        .nav-left { display: flex; align-items: center; gap: var(--space-4); }
+        .nav-logo {
+            font-family: var(--font-family-heading);
+            font-weight: 700;
+            font-size: var(--font-size-lg);
+            color: var(--color-brand-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            text-decoration: none;
+        }
+
+        .nav-search { position: relative; width: 480px; }
+        .nav-search input {
+            width: 100%; height: 40px; padding: 0 var(--space-4) 0 40px;
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius-md);
+            background-color: var(--color-core-neutral-50);
+        }
+        .nav-search i {
+            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+            color: var(--color-core-neutral-500); font-size: 18px;
+        }
+
+        .nav-actions { display: flex; align-items: center; gap: var(--space-2); }
+        .nav-icon-btn {
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+            border-radius: var(--radius-md); color: var(--color-text-secondary); font-size: 20px;
+        }
+        .nav-icon-btn.active { color: var(--color-brand-accent); background-color: var(--color-core-accent-blue-light); }
+        
+        .user-avatar {
+            width: 32px; height: 32px; border-radius: var(--radius-full);
+            background-color: var(--color-core-neutral-200);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 600; font-size: var(--font-size-sm);
+            color: var(--color-core-neutral-600); margin-left: var(--space-2);
+        }
+
+        /* App Layout */
+        .app-container { display: flex; flex: 1; overflow: hidden; }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background-color: var(--color-core-neutral-50);
+            border-right: 1px solid var(--color-border-subtle);
+            display: flex; flex-direction: column; padding: var(--space-4);
+            flex-shrink: 0;
+        }
+
+        .primary-action-btn {
+            width: 100%; height: 44px;
+            background-color: var(--color-brand-primary); color: var(--color-text-inverse);
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center; gap: var(--space-2);
+            font-weight: 600; font-size: var(--font-size-base);
+            margin-bottom: var(--space-6); box-shadow: var(--shadow-sm);
+        }
+
+        .sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
+        .sidebar-item {
+            height: 36px; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 var(--space-3); border-radius: var(--radius-md);
+            color: var(--color-text-secondary); text-decoration: none;
+            font-size: var(--font-size-base);
+        }
+        .sidebar-item:hover { background-color: var(--color-core-neutral-200); color: var(--color-text-primary); }
+        .sidebar-item i { font-size: 18px; margin-right: var(--space-3); }
+        .nav-section-title {
+            font-size: 12px; text-transform: uppercase; color: var(--color-core-neutral-500);
+            font-weight: 600; margin: var(--space-6) 0 var(--space-2) var(--space-3); letter-spacing: 0.05em;
+        }
+
+        /* =========================================
+           COMPOSE VIEW
+           ========================================= */
+        .compose-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--color-bg-surface);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .compose-header {
+            padding: var(--space-4) var(--space-6);
+            border-bottom: 1px solid var(--color-border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--color-bg-surface);
+        }
+
+        .compose-title {
+            font-family: var(--font-family-heading);
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--color-text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--space-3);
+        }
+
+        .btn-text {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: var(--radius-md);
+        }
+        .btn-text:hover { background-color: var(--color-core-neutral-100); color: var(--color-text-primary); }
+
+        /* Form Area */
+        .compose-form {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-row {
+            padding: 0 var(--space-6);
+            border-bottom: 1px solid var(--color-core-neutral-100);
+            display: flex;
+            align-items: flex-start;
+            min-height: 56px;
+        }
+
+        .form-row.hidden {
+            display: none;
+        }
+
+        .form-label {
+            width: 80px;
+            padding-top: 18px;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            color: var(--color-text-secondary);
+        }
+
+        .form-input-container {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: var(--space-2);
+            padding: 12px 0;
+            position: relative;
+        }
+
+        .form-input {
+            border: none;
+            outline: none;
+            font-size: var(--font-size-base);
+            color: var(--color-text-primary);
+            flex: 1;
+            min-width: 200px;
+            background: transparent;
+        }
+
+        /* Custom Select for 'From' */
+        .form-select {
+            border: none;
+            outline: none;
+            font-size: var(--font-size-base);
+            color: var(--color-text-primary);
+            flex: 1;
+            background: transparent;
+            cursor: pointer;
+            appearance: none;
+            padding-right: 20px;
+        }
+
+        .recipient-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background-color: var(--color-core-neutral-100);
+            border: 1px solid var(--color-core-neutral-200);
+            padding: 4px 8px;
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-sm);
+            color: var(--color-text-primary);
+        }
+
+        .pill-remove {
+            color: var(--color-core-neutral-500);
+            cursor: pointer;
+            display: flex; align-items: center;
+        }
+        .pill-remove:hover { color: var(--color-core-status-danger); }
+
+        .cc-bcc-toggle {
+            margin-left: auto;
+            font-size: var(--font-size-sm);
+            color: var(--color-brand-accent);
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .cc-bcc-toggle:hover { text-decoration: underline; }
+
+        /* Options Bar (New) */
+        .options-bar {
+            padding: var(--space-2) var(--space-6);
+            border-bottom: 1px solid var(--color-core-neutral-100);
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            background-color: var(--color-core-neutral-50);
+        }
+
+        .dropdown-wrapper {
+            position: relative;
+        }
+
+        .dropdown-trigger {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: var(--font-size-sm);
+            color: var(--color-core-neutral-600);
+            padding: 6px 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border-subtle);
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .dropdown-trigger:hover {
+            border-color: var(--color-core-neutral-300);
+            color: var(--color-text-primary);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 4px;
+            width: 220px;
+            background: white;
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            padding: 4px 0;
+            z-index: 100;
+            display: none;
+        }
+        .dropdown-menu.show { display: block; }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            font-size: var(--font-size-sm);
+            color: var(--color-text-primary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .dropdown-item:hover { background-color: var(--color-core-neutral-100); }
+        .dropdown-item.active { color: var(--color-brand-accent); font-weight: 500; }
+
+        /* Option Toggles */
+        .option-toggle {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: var(--font-size-sm);
+            color: var(--color-core-neutral-600);
+            cursor: pointer;
+            padding: 6px 8px;
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            transition: all 0.1s;
+        }
+        .option-toggle:hover { background-color: var(--color-core-neutral-200); color: var(--color-text-primary); }
+        
+        /* Standard Active State (e.g., Read Receipt) */
+        .option-toggle.active { 
+            color: var(--color-brand-accent); 
+            background-color: var(--color-core-accent-blue-light); 
+            border-color: var(--color-brand-accent); 
+        }
+
+        /* Priority Active State (Red) */
+        .option-toggle.priority.active {
+            color: var(--color-status-danger);
+            background-color: var(--color-status-danger-bg);
+            border-color: var(--color-status-danger);
+        }
+
+
+        /* Rich Text Toolbar */
+        .editor-toolbar {
+            padding: 8px var(--space-6);
+            border-bottom: 1px solid var(--color-border-subtle);
+            background-color: var(--color-bg-surface);
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 2px;
+            padding-right: 8px;
+            margin-right: 8px;
+            border-right: 1px solid var(--color-core-neutral-200);
+        }
+
+        .tool-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+            color: var(--color-core-neutral-600);
+            font-size: 18px;
+        }
+        .tool-btn:hover { background-color: var(--color-core-neutral-200); color: var(--color-text-primary); }
+        .tool-btn.active { background-color: var(--color-core-neutral-300); color: var(--color-text-primary); }
+
+        /* Editor Body */
+        .editor-body {
+            flex: 1;
+            padding: var(--space-6);
+            outline: none;
+            font-size: var(--font-size-base);
+            line-height: 1.6;
+            color: var(--color-text-primary);
+            min-height: 250px;
+        }
+
+        /* Attachments Area */
+        .attachments-preview {
+            padding: 0 var(--space-6) var(--space-4);
+            display: flex;
+            gap: var(--space-2);
+            border-bottom: 1px solid var(--color-border-subtle);
+        }
+        
+        .file-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background-color: var(--color-core-neutral-100);
+            border: 1px solid var(--color-border-subtle);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-sm);
+        }
+
+        /* Footer */
+        .compose-footer {
+            padding: var(--space-4) var(--space-6);
+            border-top: 1px solid var(--color-border-subtle);
+            background-color: var(--color-bg-surface);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-left { display: flex; gap: var(--space-3); }
+
+        .btn-primary {
+            height: 40px;
+            padding: 0 24px;
+            background-color: var(--color-brand-primary);
+            color: var(--color-text-inverse);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            display: flex; align-items: center; gap: 8px;
+            transition: background-color 0.2s;
+        }
+        .btn-primary:hover { background-color: var(--color-core-neutral-900); }
+
+        .btn-secondary {
+            height: 40px;
+            padding: 0 16px;
+            border: 1px solid var(--color-border-subtle);
+            color: var(--color-text-secondary);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .btn-secondary:hover { border-color: var(--color-core-neutral-400); color: var(--color-text-primary); }
+
+        .btn-destructive {
+             height: 40px;
+            padding: 0 16px;
+            color: var(--color-status-danger);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            display: flex; align-items: center; gap: 8px;
+            border: 1px solid transparent;
+        }
+        .btn-destructive:hover { background-color: #FEF2F2; }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .toast {
+            background-color: var(--color-core-charcoal);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-sm);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            min-width: 250px;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast i { font-size: 18px; }
+        .toast.success i { color: #4ADE80; }
+        .toast.info i { color: #60A5FA; }
+
+        /* Warning Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(37, 40, 42, 0.5);
+            backdrop-filter: blur(2px);
+            display: none; align-items: center; justify-content: center;
+            z-index: 2000;
+        }
+        .modal-overlay.open { display: flex; animation: fadeIn 0.2s ease-out; }
+        
+        .confirmation-modal {
+            width: 400px; background: white; border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg); padding: var(--space-6);
+            text-align: center;
+            animation: scaleUp 0.2s ease-out;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .modal-title { font-family: var(--font-family-heading); font-weight: 700; font-size: var(--font-size-lg); margin-bottom: var(--space-2); color: var(--color-text-primary); }
+        .modal-text { color: var(--color-text-secondary); margin-bottom: var(--space-6); line-height: 1.5; font-size: var(--font-size-base); }
+        .modal-actions { display: flex; justify-content: center; gap: var(--space-4); }
+
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-left">
+            <a href="#" class="nav-logo">
+                <i class="ph-fill ph-circles-three-plus" style="font-size: 24px;"></i>
+                Hostopia
+            </a>
+        </div>
+        <div class="nav-search">
+            <i class="ph ph-magnifying-glass"></i>
+            <input type="text" placeholder="Search mail, contacts, and events...">
+        </div>
+        <div class="nav-actions">
+            <button class="nav-icon-btn active" title="Mail" aria-label="Mail"><i class="ph-fill ph-envelope"></i></button>
+            <button class="nav-icon-btn" title="Contacts" aria-label="Contacts"><i class="ph ph-address-book"></i></button>
+            <button class="nav-icon-btn" title="Calendar" aria-label="Calendar"><i class="ph ph-calendar-blank"></i></button>
+            <button class="nav-icon-btn" title="Settings" aria-label="Settings"><i class="ph ph-gear"></i></button>
+            <div class="user-avatar" title="Account">JD</div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="app-container">
+        
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <button class="primary-action-btn">
+                <i class="ph ph-pencil-simple"></i> Compose
+            </button>
+
+            <div class="nav-section-title">Folders</div>
+            <nav class="sidebar-nav">
+                <a href="#" class="sidebar-item"><i class="ph ph-tray"></i> Inbox</a>
+                <a href="#" class="sidebar-item"><i class="ph ph-paper-plane-tilt"></i> Sent</a>
+                <a href="#" class="sidebar-item"><i class="ph ph-file-dashed"></i> Drafts</a>
+                <a href="#" class="sidebar-item"><i class="ph ph-trash"></i> Trash</a>
+            </nav>
+        </aside>
+
+        <!-- Compose View -->
+        <main class="compose-container">
+            
+            <!-- Header -->
+            <div class="compose-header">
+                <div class="compose-title">New Message</div>
+                <div class="header-actions">
+                     <button class="btn-icon" aria-label="Pop out"><i class="ph ph-arrow-square-out"></i></button>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <div class="compose-form">
+                
+                <!-- From (New) -->
+                <div class="form-row">
+                    <label class="form-label">From</label>
+                    <div class="form-input-container">
+                        <select class="form-select">
+                            <option>John Doe &lt;john.doe@bakery.com&gt;</option>
+                            <option>Orders &lt;orders@bakery.com&gt;</option>
+                            <option>Info &lt;info@bakery.com&gt;</option>
+                        </select>
+                        <i class="ph ph-caret-down" style="position: absolute; right: 0; pointer-events: none; color: var(--color-core-neutral-500);"></i>
+                    </div>
+                </div>
+
+                <!-- To -->
+                <div class="form-row">
+                    <label class="form-label">To</label>
+                    <div class="form-input-container">
+                        <div class="recipient-pill">
+                            events@planners.com
+                            <span class="pill-remove"><i class="ph ph-x"></i></span>
+                        </div>
+                        <input type="text" class="form-input" placeholder="Add recipients" autofocus>
+                        <span class="cc-bcc-toggle" onclick="toggleCcBcc()">Cc / Bcc</span>
+                    </div>
+                </div>
+
+                <!-- CC (Initially Hidden) -->
+                <div class="form-row hidden" id="row-cc">
+                    <label class="form-label">Cc</label>
+                    <div class="form-input-container">
+                        <input type="text" class="form-input" placeholder="Add Cc">
+                    </div>
+                </div>
+
+                <!-- BCC (Initially Hidden) -->
+                <div class="form-row hidden" id="row-bcc">
+                    <label class="form-label">Bcc</label>
+                    <div class="form-input-container">
+                        <input type="text" class="form-input" placeholder="Add Bcc">
+                    </div>
+                </div>
+
+                <!-- Subject -->
+                <div class="form-row">
+                    <label class="form-label">Subject</label>
+                    <div class="form-input-container">
+                        <input type="text" class="form-input" placeholder="Add a subject" value="Re: Confirming deposit for Catering">
+                    </div>
+                </div>
+
+                <!-- Message Options Bar (New) -->
+                <div class="options-bar">
+                    <!-- Format Toggle (New) -->
+                    <div class="dropdown-wrapper">
+                        <button class="dropdown-trigger" onclick="toggleDropdown('format-menu')">
+                            <i class="ph ph-file-text"></i> <span id="format-label">Format: HTML</span>
+                            <i class="ph ph-caret-down"></i>
+                        </button>
+                        <div class="dropdown-menu" id="format-menu">
+                            <div class="dropdown-item active" onclick="handleFormatChange('HTML')">Format: HTML</div>
+                            <div class="dropdown-item" onclick="handleFormatChange('Plain Text')">Format: Plain Text</div>
+                        </div>
+                    </div>
+
+                    <!-- Availability -->
+                    <div class="dropdown-wrapper">
+                        <button class="dropdown-trigger" onclick="toggleDropdown('avail-menu')">
+                            <i class="ph ph-clock"></i> <span id="avail-label">Availability</span>
+                            <i class="ph ph-caret-down"></i>
+                        </button>
+                        <div class="dropdown-menu" id="avail-menu">
+                            <div class="dropdown-item" onclick="selectOption('avail-label', 'Today (1 Hour)', 'avail-menu')">Today (1 Hour)</div>
+                            <div class="dropdown-item" onclick="selectOption('avail-label', 'Next 7 Days', 'avail-menu')">Next 7 Days</div>
+                            <div class="dropdown-item" onclick="selectOption('avail-label', 'Custom Date...', 'avail-menu')">Custom Date...</div>
+                        </div>
+                    </div>
+
+                    <!-- Signature -->
+                    <div class="dropdown-wrapper">
+                        <button class="dropdown-trigger" onclick="toggleDropdown('sig-menu')">
+                            <i class="ph ph-signature"></i> <span id="sig-label">Standard Signature</span>
+                            <i class="ph ph-caret-down"></i>
+                        </button>
+                        <div class="dropdown-menu" id="sig-menu">
+                            <div class="dropdown-item active" onclick="selectOption('sig-label', 'Standard Signature', 'sig-menu')">Standard Signature</div>
+                            <div class="dropdown-item" onclick="selectOption('sig-label', 'Legal Signature', 'sig-menu')">Legal Signature</div>
+                            <div class="dropdown-item" onclick="selectOption('sig-label', 'None', 'sig-menu')">None</div>
+                        </div>
+                    </div>
+                    
+                    <div style="flex: 1;"></div>
+
+                    <!-- Priority (Added class 'priority') -->
+                    <button class="option-toggle priority" title="Mark High Priority" onclick="toggleOption(this)">
+                        <i class="ph ph-warning-circle"></i> Priority
+                    </button>
+                    <!-- Read Receipt -->
+                    <button class="option-toggle active" title="Request Read Receipt" onclick="toggleOption(this)">
+                         <i class="ph-fill ph-check-square"></i> Read Receipt
+                    </button>
+                </div>
+
+                <!-- Toolbar -->
+                <div class="editor-toolbar">
+                    <div class="toolbar-group">
+                        <button class="tool-btn" title="Font"><i class="ph ph-text-t"></i></button>
+                        <button class="tool-btn" title="Size"><i class="ph ph-text-aa"></i></button>
+                    </div>
+                    <div class="toolbar-group">
+                        <button class="tool-btn active" title="Bold"><i class="ph ph-text-b"></i></button>
+                        <button class="tool-btn" title="Italic"><i class="ph ph-text-italic"></i></button>
+                        <button class="tool-btn" title="Underline"><i class="ph ph-text-underline"></i></button>
+                    </div>
+                    <div class="toolbar-group">
+                        <button class="tool-btn" title="Align Left"><i class="ph ph-text-align-left"></i></button>
+                        <button class="tool-btn" title="Align Center"><i class="ph ph-text-align-center"></i></button>
+                        <button class="tool-btn" title="Align Right"><i class="ph ph-text-align-right"></i></button>
+                    </div>
+                    <div class="toolbar-group">
+                        <button class="tool-btn" title="Bulleted List"><i class="ph ph-list-bullets"></i></button>
+                        <button class="tool-btn" title="Numbered List"><i class="ph ph-list-numbers"></i></button>
+                    </div>
+                    <div class="toolbar-group">
+                        <button class="tool-btn" title="Insert Link"><i class="ph ph-link"></i></button>
+                        <button class="tool-btn" title="Insert Image"><i class="ph ph-image"></i></button>
+                    </div>
+                </div>
+
+                <!-- Editor Body -->
+                <div class="editor-body" contenteditable="true" role="textbox" aria-label="Message Body">
+                    <p>Hi Sarah,</p>
+                    <p><br></p>
+                    <p>Thanks for the confirmation. That's great news!</p>
+                    <p>I've attached the signed contract for your records.</p>
+                    <p><br></p>
+                    <p>Best,<br>John</p>
+                    <br>
+                    <div style="color: #666; border-top: 1px solid #ddd; padding-top: 8px; font-size: 13px;">
+                        <strong>John Doe</strong><br>
+                        Owner, The Sweet Spot Bakery<br>
+                        (555) 123-4567 | www.sweetspotbakery.com
+                    </div>
+                </div>
+
+                <!-- Attachments (Mockup) -->
+                <div class="attachments-preview">
+                    <div class="file-chip">
+                        <i class="ph-fill ph-file-pdf" style="color: #E11D48;"></i>
+                        Signed_Contract_2024.pdf (1.2 MB)
+                        <i class="ph ph-x" style="cursor: pointer; margin-left: 4px;"></i>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="compose-footer">
+                <div class="footer-left">
+                    <button class="btn-primary" onclick="handleSend()">
+                        Send <i class="ph-bold ph-paper-plane-right"></i>
+                    </button>
+                    <!-- Attach placed at bottom as requested -->
+                    <button class="btn-secondary">
+                        <i class="ph ph-paperclip"></i> Attach
+                    </button>
+                    <button class="btn-secondary" onclick="handleSave()">
+                         Save
+                    </button>
+                </div>
+                <button class="btn-destructive" title="Discard" aria-label="Discard Draft" onclick="handleDiscard()">
+                    <i class="ph ph-trash"></i> Discard
+                </button>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Warning Modal -->
+    <div class="modal-overlay" id="formatWarningModal">
+        <div class="confirmation-modal">
+            <div class="modal-title">Switch to Plain Text?</div>
+            <p class="modal-text">Switching to plain text will discard all current formatting, images, and links. This cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('formatWarningModal')">Cancel</button>
+                <button class="btn-primary" onclick="confirmPlainText()">Yes, Switch</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        function toggleCcBcc() {
+            const ccRow = document.getElementById('row-cc');
+            const bccRow = document.getElementById('row-bcc');
+            if (ccRow.classList.contains('hidden')) {
+                ccRow.classList.remove('hidden');
+                bccRow.classList.remove('hidden');
+            } else {
+                ccRow.classList.add('hidden');
+                bccRow.classList.add('hidden');
+            }
+        }
+
+        // Logic for Dropdowns
+        function toggleDropdown(menuId) {
+            // Close others
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                if (menu.id !== menuId) menu.classList.remove('show');
+            });
+            const menu = document.getElementById(menuId);
+            menu.classList.toggle('show');
+        }
+
+        function selectOption(labelId, value, menuId) {
+            document.getElementById(labelId).innerText = value;
+            document.getElementById(menuId).classList.remove('show');
+        }
+        
+        // Format Handling
+        function handleFormatChange(mode) {
+            const currentMode = document.getElementById('format-label').innerText;
+            document.getElementById('format-menu').classList.remove('show');
+
+            if (mode === 'Plain Text' && currentMode !== 'Format: Plain Text') {
+                // Show Warning
+                document.getElementById('formatWarningModal').classList.add('open');
+            } else if (mode === 'HTML') {
+                document.getElementById('format-label').innerText = 'Format: HTML';
+                showToast('Switched to HTML', 'info');
+            }
+        }
+        
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        function confirmPlainText() {
+            document.getElementById('format-label').innerText = 'Format: Plain Text';
+            closeModal('formatWarningModal');
+            showToast('Switched to Plain Text', 'info');
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.dropdown-wrapper')) {
+                document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                    menu.classList.remove('show');
+                });
+            }
+        });
+
+        // Toggle Buttons (Priority/Read Receipt)
+        function toggleOption(btn) {
+            btn.classList.toggle('active');
+            const icon = btn.querySelector('i');
+            
+            // Generic Icon Toggle Logic (Regular -> Filled)
+            if(btn.classList.contains('active')) {
+                icon.classList.remove('ph');
+                icon.classList.add('ph-fill');
+            } else {
+                icon.classList.remove('ph-fill');
+                icon.classList.add('ph');
+            }
+        }
+
+        // Action Handlers
+        function handleSend() {
+            showToast('Message Sent', 'success');
+        }
+
+        function handleSave() {
+            showToast('Draft Saved', 'info');
+        }
+
+        function handleDiscard() {
+            showToast('Draft Discarded', 'info');
+            // Logic to clear form would go here
+        }
+
+        // Toast System
+        function showToast(message, type) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            let iconClass = type === 'success' ? 'ph-fill ph-check-circle' : 'ph-fill ph-info';
+            
+            toast.innerHTML = `<i class="${iconClass}"></i> ${message}`;
+            container.appendChild(toast);
+
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 10);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

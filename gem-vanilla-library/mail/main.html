@@ -35,7 +35,13 @@
     <gem-topnav active="Mail" base=".."></gem-topnav>
 
     <div class="page-layout">
-        <gem-sidebar>
+        <gem-sidebar title="">
+            <div class="gem-sidebar-action">
+                <button class="sidebar-primary-btn" onclick="location.href='compose.html'">
+                    <i class="ph ph-pencil-simple"></i>
+                    <span>Compose</span>
+                </button>
+            </div>
             <gem-sidebar-section title="Folders" icon="ph-folder">
                 <gem-sidebar-item active>Inbox</gem-sidebar-item>
                 <gem-sidebar-item>Sent</gem-sidebar-item>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compose - GEM Vanilla Library</title>
+
+    <!-- Fonts -->
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Core Styles -->
+    <link rel="stylesheet" href="../styles/design-tokens.css">
+    <link rel="stylesheet" href="../styles/index.css">
+
+    <!-- Component Styles -->
+    <link rel="stylesheet" href="../components/TopNav/TopNav.css">
+    <link rel="stylesheet" href="../components/Sidebar/Sidebar.css">
+    <link rel="stylesheet" href="../components/Compose/Compose.css">
+
+    <!-- Component Scripts -->
+    <script src="../components/TopNav/TopNav.js"></script>
+    <script src="../components/Sidebar/Sidebar.js"></script>
+    <script src="../components/Compose/Compose.js"></script>
+
+    <!-- Export Script (for browser console) -->
+    <script src="../scripts/export-page.js"></script>
+
+</head>
+
+<body>
+
+    <gem-topnav active="Mail" base=".."></gem-topnav>
+
+    <div class="page-layout">
+        <gem-sidebar>
+            <div class="gem-sidebar-action">
+                <button class="sidebar-primary-btn" onclick="location.href='main.html'">
+                    <i class="ph ph-pencil-simple"></i> Compose
+                </button>
+            </div>
+
+            <gem-sidebar-section title="Folders" icon="ph-folder">
+                <gem-sidebar-item>Inbox</gem-sidebar-item>
+                <gem-sidebar-item>Sent</gem-sidebar-item>
+                <gem-sidebar-item>Drafts</gem-sidebar-item>
+                <gem-sidebar-item>Trash</gem-sidebar-item>
+            </gem-sidebar-section>
+
+            <gem-sidebar-usage used="8.5" total="10"></gem-sidebar-usage>
+        </gem-sidebar>
+
+        <!-- Compose View -->
+        <main class="compose-container">
+
+            <!-- Header -->
+            <div class="compose-header">
+                <div class="compose-title">New Message</div>
+                <div class="header-actions">
+                    <button class="btn-icon" aria-label="Pop out">
+                        <i class="ph ph-arrow-square-out"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <div class="compose-form">
+
+                <!-- From -->
+                <div class="form-row">
+                    <label class="form-label">From</label>
+                    <div class="form-input-container">
+                        <select class="form-select">
+                            <option>John Doe &lt;john.doe@bakery.com&gt;</option>
+                            <option>Orders &lt;orders@bakery.com&gt;</option>
+                            <option>Info &lt;info@bakery.com&gt;</option>
+                        </select>
+                        <i class="ph ph-caret-down"
+                            style="position: absolute; right: 0; pointer-events: none; color: var(--color-core-neutral-500);"></i>
+                    </div>
+                </div>
+
+                <!-- To -->
+                <div class="form-row">
+                    <label class="form-label">To</label>
+                    <div class="form-input-container">
+                        <div class="recipient-pill">
+                            events@planners.com
+                            <span class="pill-remove"><i class="ph ph-x"></i></span>
+                        </div>
+                        <input type="text" class="form-input" placeholder="Add recipients" autofocus>
+                        <span class="cc-bcc-toggle" onclick="toggleCcBcc()">Cc / Bcc</span>
+                    </div>
+                </div>
+
+                <!-- CC (Initially Hidden) -->
+                <div class="form-row hidden" id="row-cc">
+                    <label class="form-label">Cc</label>
+                    <div class="form-input-container">
+                        <input type="text" class="form-input" placeholder="Add Cc">
+                    </div>
+                </div>
+
+                <!-- BCC (Initially Hidden) -->
+                <div class="form-row hidden" id="row-bcc">
+                    <label class="form-label">Bcc</label>
+                    <div class="form-input-container">
+                        <input type="text" class="form-input" placeholder="Add Bcc">
+                    </div>
+                </div>
+
+                <!-- Subject -->
+                <div class="form-row">
+                    <label class="form-label">Subject</label>
+                    <div class="form-input-container">
+                        <input type="text" class="form-input" placeholder="Add a subject"
+                            value="Re: Confirming deposit for Catering">
+                    </div>
+                </div>
+
+                <!-- Message Options Bar -->
+                <div class="options-bar">
+                    <!-- Format Toggle -->
+                    <div class="dropdown-wrapper">
+                        <button class="dropdown-trigger" onclick="toggleDropdown('format-menu')">
+                            <i class="ph ph-file-text"></i> <span id="format-label">Format: HTML</span>
+                            <i class="ph ph-caret-down"></i>
+                        </button>
+                        <div class="dropdown-menu" id="format-menu">
+                            <div class="dropdown-item active" onclick="handleFormatChange('HTML')">Format: HTML</div>
+                            <div class="dropdown-item" onclick="handleFormatChange('Plain Text')">Format: Plain Text
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Availability -->
+                    <div class="dropdown-wrapper">
+                        <button class="dropdown-trigger" onclick="toggleDropdown('avail-menu')">
+                            <i class="ph ph-clock"></i> <span id="avail-label">Availability</span>
+                            <i class="ph ph-caret-down"></i>
+                        </button>
+                        <div class="dropdown-menu" id="avail-menu">
+                            <div class="dropdown-item"
+                                onclick="selectOption('avail-label', 'Today (1 Hour)', 'avail-menu')">Today (1 Hour)
+                            </div>
+                            <div class="dropdown-item"
+                                onclick="selectOption('avail-label', 'Next 7 Days', 'avail-menu')">Next 7 Days</div>
+                            <div class="dropdown-item"
+                                onclick="selectOption('avail-label', 'Custom Date...', 'avail-menu')">Custom Date...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Signature -->
+                    <div class="dropdown-wrapper">
+                        <button class="dropdown-trigger" onclick="toggleDropdown('sig-menu')">
+                            <i class="ph ph-signature"></i> <span id="sig-label">Standard Signature</span>
+                            <i class="ph ph-caret-down"></i>
+                        </button>
+                        <div class="dropdown-menu" id="sig-menu">
+                            <div class="dropdown-item active"
+                                onclick="selectOption('sig-label', 'Standard Signature', 'sig-menu')">Standard Signature
+                            </div>
+                            <div class="dropdown-item"
+                                onclick="selectOption('sig-label', 'Legal Signature', 'sig-menu')">Legal Signature</div>
+                            <div class="dropdown-item" onclick="selectOption('sig-label', 'None', 'sig-menu')">None
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="flex: 1;"></div>
+
+                    <!-- Priority -->
+                    <button class="option-toggle priority" title="Mark High Priority" onclick="toggleOption(this)">
+                        <i class="ph ph-warning-circle"></i> Priority
+                    </button>
+                    <!-- Read Receipt -->
+                    <button class="option-toggle active" title="Request Read Receipt" onclick="toggleOption(this)">
+                        <i class="ph-fill ph-check-square"></i> Read Receipt
+                    </button>
+                </div>
+
+                <!-- Toolbar -->
+                <div class="editor-toolbar">
+                    <div class="toolbar-group">
+                        <button class="tool-btn" title="Font"><i class="ph ph-text-t"></i></button>
+                        <button class="tool-btn" title="Size"><i class="ph ph-text-aa"></i></button>
+                    </div>
+                    <div class="toolbar-group">
+                        <button class="tool-btn active" title="Bold"><i class="ph ph-text-b"></i></button>
+                        <button class="tool-btn" title="Italic"><i class="ph ph-text-italic"></i></button>
+                        <button class="tool-btn" title="Underline"><i class="ph ph-text-underline"></i></button>
+                    </div>
+                    <div class="toolbar-group">
+                        <button class="tool-btn" title="Align Left"><i class="ph ph-text-align-left"></i></button>
+                        <button class="tool-btn" title="Align Center"><i class="ph ph-text-align-center"></i></button>
+                        <button class="tool-btn" title="Align Right"><i class="ph ph-text-align-right"></i></button>
+                    </div>
+                    <div class="toolbar-group">
+                        <button class="tool-btn" title="Bulleted List"><i class="ph ph-list-bullets"></i></button>
+                        <button class="tool-btn" title="Numbered List"><i class="ph ph-list-numbers"></i></button>
+                    </div>
+                    <div class="toolbar-group">
+                        <button class="tool-btn" title="Insert Link"><i class="ph ph-link"></i></button>
+                        <button class="tool-btn" title="Insert Image"><i class="ph ph-image"></i></button>
+                    </div>
+                </div>
+
+                <!-- Editor Body -->
+                <div class="editor-body" contenteditable="true" role="textbox" aria-label="Message Body">
+                    <p>Hi Sarah,</p>
+                    <p><br></p>
+                    <p>Thanks for the confirmation. That's great news!</p>
+                    <p>I've attached the signed contract for your records.</p>
+                    <p><br></p>
+                    <p>Best,<br>John</p>
+                    <br>
+                    <div
+                        style="color: var(--color-text-secondary); border-top: 1px solid var(--color-border-neutral); padding-top: 8px; font-size: var(--font-size-sm);">
+                        <strong>John Doe</strong><br>
+                        Owner, The Sweet Spot Bakery<br>
+                        (555) 123-4567 | www.sweetspotbakery.com
+                    </div>
+                </div>
+
+                <!-- Attachments -->
+                <div class="attachments-preview">
+                    <div class="file-chip">
+                        <i class="ph-fill ph-file-pdf" style="color: #E11D48;"></i>
+                        Signed_Contract_2024.pdf (1.2 MB)
+                        <i class="ph ph-x remove-file"></i>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="compose-footer">
+                <div class="footer-left">
+                    <button class="btn-primary" onclick="handleSend()">
+                        Send <i class="ph-bold ph-paper-plane-right"></i>
+                    </button>
+                    <button class="btn-secondary">
+                        <i class="ph ph-paperclip"></i> Attach
+                    </button>
+                    <button class="btn-secondary" onclick="handleSave()">
+                        Save
+                    </button>
+                </div>
+                <button class="btn-destructive" title="Discard" aria-label="Discard Draft" onclick="handleDiscard()">
+                    <i class="ph ph-trash"></i> Discard
+                </button>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Warning Modal -->
+    <div class="modal-overlay" id="formatWarningModal">
+        <div class="confirmation-modal">
+            <div class="modal-title">Switch to Plain Text?</div>
+            <p class="modal-text">Switching to plain text will discard all current formatting, images, and links. This
+                cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('formatWarningModal')">Cancel</button>
+                <button class="btn-primary" onclick="confirmPlainText()">Yes, Switch</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+</body>
+
+</html>

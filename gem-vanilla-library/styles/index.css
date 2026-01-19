@@ -25,3 +25,16 @@ a {
     text-decoration: none;
     color: inherit;
 }
+
+/* Page Layout */
+.page-layout {
+    display: flex;
+    height: calc(100vh - var(--size-height-top-nav));
+    overflow: hidden;
+}
+
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    background-color: var(--color-background-container);
+}
